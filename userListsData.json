@@ -1,0 +1,6 @@
+[
+    {"_id":{"$oid":"63563f4d1f35d7e2cfe853d3"},"name":"Andy","password":"123456", "icon":"icons/andy.jpeg"},
+    {"_id":{"$oid":"635642d31f35d7e2cfe853d4"},"name":"Alice","password":"qwerty", "icon":"icons/alice.jpeg"},
+    {"_id":{"$oid":"635643101f35d7e2cfe853d5"},"name":"Bob","password":"asdf", "icon":"icons/bob.jpeg"},
+    {"_id":{"$oid":"635644201f35d7e2cfe853d7"},"name":"Thomas","password":"thomas", "icon":"icons/thomas.jpeg"}
+]
