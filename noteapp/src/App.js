@@ -4,6 +4,62 @@ import $ from 'jquery';
 import React from 'react';
 
 
+
+
+class iNotes extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loggedIn: false,
+      userId: "",
+      user:"",
+      notes:"",
+    }
+
+    this.onLoggedIn = this.onLoggedIn.bind(this)
+    this.onLogout = this.onLogout.bind(this)
+  }
+
+  onLoggedIn(serverReponse) {
+    console.log(serverReponse)
+    this.setState({
+      user: serverReponse.user,
+      notes: serverReponse.notes,
+      loggedIn: true,
+    })
+  }
+
+  onLogout() {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost:3001/logout",
+      success: () => this.setState({loggedIn: false}),
+      error: (err) => alert("Error: " + err),
+    });
+  }
+
+
+  render() {
+    if (this.state.loggedIn) {
+      return (
+        <div>
+          <h1>iNotes</h1>
+          <h2>HomePage</h2>
+          <LogoutButton onLogout={this.onLogout} />
+        </div>
+      )
+    } else {
+      return <LoginForm onLogin={this.onLoggedIn} />
+    }
+  }
+}
+
+
+function LogoutButton(props) {
+  return <button type="button" onClick={props.onLogout}>Logout</button>
+}
+
+
 class LoginForm extends React.Component {
   constructor(props) {
     super(props)
@@ -27,8 +83,16 @@ class LoginForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    
-    // send request
+    $.ajax({
+      method: "POST",
+      data: {
+        name: this.state.name,
+        password: this.state.password,
+      },
+      url: "http://localhost:3001/signin",
+      success: (result) => {this.props.onLogin(result)},
+      error: (err) => {alert("Error: " + err)},
+    });
   }
 
   render() {
@@ -52,31 +116,5 @@ class LoginForm extends React.Component {
 }
 
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
-function App() {
-  return (
-    <LoginForm />
-  )
-}
-
-export default App;
+export default iNotes;
