@@ -21,7 +21,7 @@ router.post('/signin', (req, res)=> {
     let responseData = {
         error: "",
         user: "", 
-        usernotes: ""
+        notes: ""
     };
     userListCol.findOne({name: name, password: password}).then((currentUser) => {
         if (!currentUser) {
@@ -38,7 +38,7 @@ router.post('/signin', (req, res)=> {
             throw new Error("Error in retrieving Notes")
         }
 
-        responseData.usernotes = userNotes;
+        responseData.notes = userNotes;
 
         res.json(responseData);
     }).catch(err=> {
