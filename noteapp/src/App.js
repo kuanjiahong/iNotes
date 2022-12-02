@@ -38,7 +38,6 @@ class iNotes extends React.Component {
     });
   }
 
-
   render() {
     if (this.state.loggedIn) {
       return (
@@ -46,6 +45,13 @@ class iNotes extends React.Component {
           <h1>iNotes</h1>
           <h2>HomePage</h2>
           <LogoutButton onLogout={this.onLogout} />
+          <img src={"http://localhost:3001/" + this.state.user.icon} alt="user icon" />
+          <p>{this.state.user.name}</p>
+          <ul>
+            {
+              this.state.notes.map((note) => <li key={note._id}>{note.title}</li>)
+            }
+          </ul>
         </div>
       )
     } else {
