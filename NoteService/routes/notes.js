@@ -1,17 +1,47 @@
+const { response } = require('express');
 var express = require('express');
+const monk = require('monk');
 var router = express.Router();
 
 
-/* GET notes listing. */
-router.get('/', function(req, res, next) {
-    try {
+router.get('/load', (req, res) => {
+    console.log(req.session);
+    if (req.session.userId) {
         let userListCol = req.db.get('userList');
         let noteListCol = req.db.get('noteList');
-        res.send("Connection success");
-    } catch (e) {
-        res.send(e);
+        let responseData = {
+            error: "",
+            user: "", 
+            notes: ""
+        };
+        userListCol.findOne({_id: monk.id(req.session.userId)}).then((currentUser) => {
+            if (!currentUser) {
+                throw new Error('Login failure');
+            }
+            
+            // res.cookie('userId', currentUser._id, {maxAge: 30 * 60000});
+            req.session.userId = currentUser._id;
+    
+            console.log(req.session)
+        
+            responseData.user = currentUser;
+            return noteListCol.find({userId: monk.id(req.session.userId)});
+        }).then((userNotes) => {
+            if (!userNotes) {
+                throw new Error("Error in retrieving Notes")
+            }
+    
+            responseData.notes = userNotes;
+    
+            res.json(responseData);
+        }).catch(err=> {
+            responseData.error = err;
+            res.send(responseData);
+        });
+    } else {
+        res.send("Nothing")
     }
-});
+})
 
 router.post('/signin', (req, res)=> {
     const name = req.body.name;
@@ -28,8 +58,10 @@ router.post('/signin', (req, res)=> {
             throw new Error('Login failure');
         }
         
-        res.cookie('userId', currentUser._id, {maxAge: 30 * 60000});
+        // res.cookie('userId', currentUser._id, {maxAge: 30 * 60000});
+        req.session.userId = currentUser._id;
 
+        console.log(req.session)
     
         responseData.user = currentUser;
         return noteListCol.find({userId: currentUser._id});
@@ -49,7 +81,7 @@ router.post('/signin', (req, res)=> {
 });
 
 router.get('/logout', (req, res) => {
-    res.clearCookie('userId');
+    req.session.destroy();
     res.send("");
 });
 
