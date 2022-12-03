@@ -3,37 +3,18 @@ const monk = require('monk');
 var router = express.Router();
 
 
-router.get('/load', (req, res) => {
+router.get('/load', async (req, res) => {
     if (req.session.userId) {
         let userListCol = req.db.get('userList');
         let noteListCol = req.db.get('noteList');
-        let responseData = {
-            error: "",
-            user: "", 
-            notes: ""
-        };
-        userListCol.findOne({_id: monk.id(req.session.userId)}).then((currentUser) => {
-            if (!currentUser) {
-                throw new Error('Login failure');
-            }
-            
-            req.session.userId = currentUser._id;
-            responseData.user = currentUser;
-            return noteListCol.find({userId: monk.id(req.session.userId)});
-        }).then((userNotes) => {
-            if (!userNotes) {
-                throw new Error("Error in retrieving Notes")
-            }
-    
-            responseData.notes = userNotes;
-    
-            res.json(responseData);
-        }).catch(err=> {
-            responseData.error = err;
-            res.send(responseData);
-        });
+        let responseData = {error: "", user: "", notes: ""};
+        let user = userListCol.findOne({_id: monk.id(req.session.userId)}).then((currentUser) => currentUser);
+        let note = noteListCol.find({userId: monk.id(req.session.userId)}).then((note) => note);
+        responseData.user = await user;
+        responseData.notes = await note;
+        res.json(responseData);
     } else {
-        res.send("Nothing")
+        res.send("")
     }
 })
 

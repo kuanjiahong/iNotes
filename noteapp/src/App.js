@@ -25,7 +25,7 @@ class iNotes extends React.Component {
       url: "http://localhost:3001/load",
       xhrFields: { withCredentials: true },
       success: (result) => {
-        if (result === "Nothing") {
+        if (result === "") {
           return null;
         } else {
           this.onLoggedIn(result)
