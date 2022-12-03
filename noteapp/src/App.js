@@ -72,12 +72,16 @@ function Sidebar(props) {
   const notes = props.notes;
   if (notes.length > 0) {
     return (
-      <ul>
-        {
-          notes.map(note => <li key={note._id}>{note.title}</li>)
-        }
-      </ul>
+      <menu>
+        <p>Notes ({notes.length})</p>
+        <ul>
+          {
+            notes.map(note => <li key={note._id}>{note.title}</li>)
+          }
+        </ul>
+      </menu>
     )
+
   } else {
     return <p>No notes</p>
   }
