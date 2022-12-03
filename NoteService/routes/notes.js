@@ -1,11 +1,9 @@
-const { response } = require('express');
 var express = require('express');
 const monk = require('monk');
 var router = express.Router();
 
 
 router.get('/load', (req, res) => {
-    console.log(req.session);
     if (req.session.userId) {
         let userListCol = req.db.get('userList');
         let noteListCol = req.db.get('noteList');
@@ -19,11 +17,7 @@ router.get('/load', (req, res) => {
                 throw new Error('Login failure');
             }
             
-            // res.cookie('userId', currentUser._id, {maxAge: 30 * 60000});
             req.session.userId = currentUser._id;
-    
-            console.log(req.session)
-        
             responseData.user = currentUser;
             return noteListCol.find({userId: monk.id(req.session.userId)});
         }).then((userNotes) => {
@@ -58,11 +52,8 @@ router.post('/signin', (req, res)=> {
             throw new Error('Login failure');
         }
         
-        // res.cookie('userId', currentUser._id, {maxAge: 30 * 60000});
         req.session.userId = currentUser._id;
 
-        console.log(req.session)
-    
         responseData.user = currentUser;
         return noteListCol.find({userId: currentUser._id});
     }).then((userNotes) => {
