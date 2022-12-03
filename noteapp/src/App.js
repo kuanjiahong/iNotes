@@ -58,16 +58,8 @@ class iNotes extends React.Component {
     if (this.state.loggedIn) {
       return (
         <div>
-          <h1>iNotes</h1>
-          <h2>HomePage</h2>
-          <LogoutButton onLogout={this.onLogout} />
-          <img src={"http://localhost:3001/" + this.state.user.icon} alt="user icon" />
-          <p>{this.state.user.name}</p>
-          <ul>
-            {
-              this.state.notes.map((note) => <li key={note._id}>{note.title}</li>)
-            }
-          </ul>
+          <Header icon={this.state.user.icon} name={this.state.user.name} onLogout={this.onLogout}/>
+          <Sidebar notes={this.state.notes} />
         </div>
       )
     } else {
@@ -76,6 +68,31 @@ class iNotes extends React.Component {
   }
 }
 
+function Sidebar(props) {
+  const notes = props.notes;
+  if (notes.length > 0) {
+    return (
+      <ul>
+        {
+          notes.map(note => <li key={note._id}>{note.title}</li>)
+        }
+      </ul>
+    )
+  } else {
+    return <p>No notes</p>
+  }
+}
+
+function Header(props) {
+  return (
+    <header>
+      <h1>iNotes</h1>
+      <img src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
+      <p>{props.name}</p>
+      <LogoutButton onLogout={props.onLogout} />
+    </header>
+  )
+}
 
 function LogoutButton(props) {
   return <button type="button" onClick={props.onLogout}>Logout</button>
