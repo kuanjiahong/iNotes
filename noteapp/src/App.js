@@ -89,12 +89,12 @@ function Sidebar(props) {
 
 function Header(props) {
   return (
-    <header>
+    <div>
       <h1>iNotes</h1>
       <img src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
       <p>{props.name}</p>
       <LogoutButton onLogout={props.onLogout} />
-    </header>
+    </div>
   )
 }
 
