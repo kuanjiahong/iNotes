@@ -60,6 +60,7 @@ class iNotes extends React.Component {
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} onLogout={this.onLogout}/>
           <Sidebar notes={this.state.notes} />
+          <Dashboard />
         </div>
       )
     } else {
@@ -85,6 +86,60 @@ function Sidebar(props) {
   } else {
     return <p>No notes</p>
   }
+}
+
+
+class Dashboard extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      activeNotes: "",
+      addNote: false
+    }
+    this.handleNewNoteClicked = this.handleNewNoteClicked.bind(this)
+    this.handleClicked = this.handleClicked.bind(this)
+  }
+
+  handleNewNoteClicked() {
+    this.setState({addNote: true})
+  }
+
+  handleClicked() {
+    this.setState({addNote: false})
+  }
+
+  render() {
+    if (this.state.addNote) {
+      return (
+        <NewNotePage handleClicked={this.handleClicked}/>
+      )
+    }
+    return <AddNote onNewNoteClicked={this.handleNewNoteClicked}/>
+  }
+}
+
+class NewNotePage extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      title: "",
+      content: "",
+      lastsavedtime: ""
+    }
+  }
+
+  render() {
+    return (
+    <div>
+      <button type="button" onClick={this.props.handleClicked}>Save</button>
+      <button type="button" onClick={this.props.handleClicked}>Cancel</button>
+    </div>
+    )
+  }
+}
+
+function AddNote(props) {
+  return <button type="button" onClick={props.onNewNoteClicked}>New Note</button>
 }
 
 function Header(props) {
