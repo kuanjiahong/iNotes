@@ -4,8 +4,6 @@ import $ from 'jquery';
 import React from 'react';
 
 
-
-
 class iNotes extends React.Component {
   constructor(props) {
     super(props)
@@ -18,6 +16,23 @@ class iNotes extends React.Component {
 
     this.onLoggedIn = this.onLoggedIn.bind(this)
     this.onLogout = this.onLogout.bind(this)
+    
+  }
+
+  componentDidMount() {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost:3001/load",
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        if (result === "Nothing") {
+          return null;
+        } else {
+          this.onLoggedIn(result)
+        }
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   onLoggedIn(serverReponse) {
@@ -33,6 +48,7 @@ class iNotes extends React.Component {
     $.ajax({
       method: "GET",
       url: "http://localhost:3001/logout",
+      xhrFields: { withCredentials: true },
       success: () => this.setState({loggedIn: false}),
       error: (err) => alert("Error: " + err),
     });
@@ -95,6 +111,7 @@ class LoginForm extends React.Component {
         name: this.state.name,
         password: this.state.password,
       },
+      xhrFields: { withCredentials: true },
       url: "http://localhost:3001/signin",
       success: (result) => {this.props.onLogin(result)},
       error: (err) => {alert("Error: " + err)},
