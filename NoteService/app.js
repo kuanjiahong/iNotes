@@ -15,7 +15,7 @@ app.use(session({
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true,
-  cookie: {maxAge: 60000}
+  cookie: {maxAge: 30 * 60000} // 30 minutes
 }))
 // cors 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
