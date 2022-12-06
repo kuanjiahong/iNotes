@@ -133,16 +133,19 @@ router.put('/savenote/:noteid', (req, res) => {
 router.get('/searchnotes', (req, res) => {
     let searchStr = req.query.searchstr;
     let noteListCol = req.db.get('noteList');
-    const userId = req.cookies.userId;
+    const userId = req.session.userId;
+    console.log(searchStr)
+    console.log(userId);
     let responseData = {
         error: "",
         result: "",
     }
-    noteListCol.find({userId: userId}).then((documents) => {
+    noteListCol.find({userId: monk.id(userId)}).then((documents) => {
+        console.log(documents);
         let filtered = documents.filter((el) => {
-            return el.name.includes(searchStr) || el.title.includes(searchStr);
+            return el.content.includes(searchStr) || el.title.includes(searchStr);
         });
-        
+        console.log(filtered);
         responseData.result = filtered;
         res.json(responseData);
     }).catch(err => {
