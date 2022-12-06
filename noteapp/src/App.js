@@ -18,7 +18,7 @@ class iNotes extends React.Component {
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
-    
+    this.getAllData = this.getAllData.bind(this)
     this.createNote = this.createNote.bind(this)
     this.updateNote = this.updateNote.bind(this)
     this.deleteNote = this.deleteNote.bind(this)
@@ -26,6 +26,10 @@ class iNotes extends React.Component {
   }
 
   componentDidMount() {
+    this.getAllData();
+  }
+
+  getAllData() {
     $.ajax({
       method: "GET",
       url: "http://localhost:3001/load",
@@ -58,22 +62,36 @@ class iNotes extends React.Component {
     });
   }
 
-  createNote(title, content, timestamp) {
+  createNote(title, content) {
     alert("Create Note on backend");
-    alert(`Note created! title: ${title} Content: ${content}  Timestamp: ${timestamp}`);
+    alert(`Note created! title: ${title} Content: ${content}`);
+    $.ajax({
+      method: "POST",
+      data:{
+        title: title,
+        content: content,
+      },
+      url: "http://localhost:3001/addnote",
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        this.getAllData();
+        this.getActiveNote(result.inserted_note_id);
+      },
+      error: (err) => alert("Error: " + err),
+    });
 
   }
 
-  updateNote(title, content, timestamp) {
+  updateNote(title, content) {
     alert("Update note on backend");
-    alert(`Note updated! title: ${title} Content: ${content}  Timestamp: ${timestamp}`);
+    alert(`Note updated! title: ${title} Content: ${content}`);
   }
 
   deleteNote(noteId) {
     alert(`Note ${noteId} is deleted`);
   }
 
-  
+
   handleLogin(serverReponse) {
     console.log(serverReponse)
     if (serverReponse.user) {
@@ -124,7 +142,6 @@ class Sidebar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      notes: props.notes,
       searchString: "",
     }
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -157,8 +174,8 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const length = this.state.notes.length;
-    const notes = this.state.notes;
+    const length = this.props.notes.length;
+    const notes = this.props.notes;
     if (length > 0) {
       return (
       <menu>
@@ -209,13 +226,13 @@ class Dashboard extends React.Component {
     this.setState({editNoteMode: true})
   }
 
-  saveClicked(title, content, timestamp, mode) {
-    alert(`Note saved! title: ${title} Content: ${content}  Timestamp: ${timestamp}`);
+  saveClicked(title, content, mode) {
+    alert(`Note saved! title: ${title} Content: ${content}`);
     this.setState({addNoteMode: false,editNoteMode: false})
     if (mode === "NEW") {
-      this.props.createNote(title, content, timestamp);
+      this.props.createNote(title, content);
     } else if (mode === "UPDATE") {
-      this.props.updateNote(title, content, timestamp);
+      this.props.updateNote(title, content);
     }
   }
 
@@ -294,7 +311,7 @@ class NewNotePage extends React.Component {
       <input type="text" name="title" placeholder='Note title' onChange={this.handleInputChange}/>
       <label>Content </label>
       <textarea name="content" value={this.state.value} placeholder="Note content" onChange={this.handleInputChange} />
-      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, Date.now(), "NEW")}}>Save</button>
+      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, "NEW")}}>Save</button>
       <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
     </div>
     )
@@ -328,7 +345,7 @@ class EditNotePage extends React.Component {
       <p>Edit Mode</p>
       <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title"/>
       <textarea name='content' defaultValue={this.state.content} placeholder="Note content" />
-      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, Date.now(), "UPDATE")}}>Save</button>
+      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, "UPDATE")}}>Save</button>
       <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
     </div>
     )
