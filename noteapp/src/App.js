@@ -83,21 +83,21 @@ class iNotes extends React.Component {
 
   }
 
-  updateNote(noteid, title, content) {
+  updateNote(noteId, title, content) {
     alert("Update note on backend");
-    alert(`Note updated! id: ${noteid}  title: ${title} Content: ${content}`);
+    alert(`Note updated! id: ${noteId}  title: ${title} Content: ${content}`);
     $.ajax({
       method: "PUT",
       data: {
         title: title,
         content: content,
       },
-      url: "http://localhost:3001/savenote/" + noteid,
+      url: "http://localhost:3001/savenote/" + noteId,
       xhrFields: { withCredentials: true },
       success: (result) => {
         console.log(result)
         this.getAllData();
-        this.getActiveNote(noteid);
+        this.getActiveNote(noteId);
       },
       error: (err) => alert("Error: " + err),
     });
