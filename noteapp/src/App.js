@@ -15,8 +15,9 @@ class iNotes extends React.Component {
       activeNote: [],
     }
 
-    this.onLoggedIn = this.onLoggedIn.bind(this)
-    this.onLogout = this.onLogout.bind(this)
+    this.handleLogin = this.handleLogin.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
+    this.onLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
     this.handleDeleteClicked = this.handleDeleteClicked.bind(this)
     
@@ -31,7 +32,7 @@ class iNotes extends React.Component {
         if (result === "") {
           return null;
         } else {
-          this.onLoggedIn(result)
+          this.handleLogin(result)
         }
       },
       error: (err) => console.error(err)
@@ -61,7 +62,7 @@ class iNotes extends React.Component {
     }
   }
 
-  onLoggedIn(serverReponse) {
+  handleLogin(serverReponse) {
     console.log(serverReponse)
     if (serverReponse.user) {
       this.setState({
@@ -75,7 +76,7 @@ class iNotes extends React.Component {
  
   }
 
-  onLogout() {
+  handleLogout() {
     $.ajax({
       method: "GET",
       url: "http://localhost:3001/logout",
@@ -95,13 +96,13 @@ class iNotes extends React.Component {
     if (this.state.loggedIn) {
       return (
         <div>
-          <Header icon={this.state.user.icon} name={this.state.user.name} onLogout={this.onLogout}/>
+          <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
           <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
           <Dashboard activeNote={this.state.activeNote} deleteClicked={this.handleDeleteClicked}/>
         </div>
       )
     } else {
-      return <LoginForm onLogin={this.onLoggedIn} />
+      return <LoginForm handleLogin={this.handleLogin} />
     }
   }
 }
@@ -318,14 +319,11 @@ function Header(props) {
       <h1>iNotes</h1>
       <img src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
       <p>{props.name}</p>
-      <LogoutButton onLogout={props.onLogout} />
+      <button type='button' onClick={props.handleLogout}>Logout</button>
     </div>
   )
 }
 
-function LogoutButton(props) {
-  return <button type="button" onClick={props.onLogout}>Logout</button>
-}
 
 
 class LoginForm extends React.Component {
@@ -359,7 +357,7 @@ class LoginForm extends React.Component {
       },
       xhrFields: { withCredentials: true },
       url: "http://localhost:3001/signin",
-      success: (result) => {this.props.onLogin(result)},
+      success: (result) => {this.props.handleLogin(result)},
       error: (err) => {alert("Error: " + err)},
     });
   }
