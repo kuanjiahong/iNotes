@@ -81,7 +81,7 @@ router.post('/addnote', (req,res) => {
     const noteTitle = req.body.title;
     const noteContent = req.body.content;
     const userId = req.session.userId;
-    const timestamp = Date();
+    const timestamp = Date.now();
     let noteDocument = {
         lastsavedtime: timestamp,
         title: noteTitle,
@@ -110,7 +110,7 @@ router.put('/savenote/:noteid', (req, res) => {
     const noteid = req.params.noteid;
     const newContent = req.body.content;
     const newTitle = req.body.title;
-    const newTimestamp = Date()
+    const newTimestamp = Date.now()
     let noteListCol = req.db.get('noteList')
     let updateQuery = {
         title: newTitle,
