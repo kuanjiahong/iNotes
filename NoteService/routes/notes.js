@@ -59,16 +59,18 @@ router.get('/logout', (req, res) => {
 
 router.get('/getnote', (req, res) => {
     const noteid = req.query.noteid;
+    console.log(noteid);
     let noteListCol = req.db.get('noteList');
     let responseData = {
         error: "",
-        usernotes: ""
+        note: ""
     };
-    noteListCol.find({_id: noteid}).then((note) => {
+    noteListCol.find({_id: monk.id(noteid)}).then((note) => {
         if (!note) {
             throw new Error("Error in retrieving note");
         }
-        responseData.usernotes = note;
+        responseData.note = note;
+        res.json(responseData);
     }).catch(err => {
         responseData.error = err;
         res.json(responseData);
