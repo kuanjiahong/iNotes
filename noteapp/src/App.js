@@ -56,7 +56,9 @@ class iNotes extends React.Component {
   }
 
   handleDeleteClicked(noteId) {
-    alert(`Note ${noteId} is deleted`);
+    if (window.confirm("Confirm to delete this note?")) {
+      alert(`Note ${noteId} is deleted`);
+    }
   }
 
   onLoggedIn(serverReponse) {
