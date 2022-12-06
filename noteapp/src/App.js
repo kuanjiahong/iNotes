@@ -63,11 +63,16 @@ class iNotes extends React.Component {
 
   onLoggedIn(serverReponse) {
     console.log(serverReponse)
-    this.setState({
-      user: serverReponse.user,
-      notes: serverReponse.notes,
-      loggedIn: true,
-    })
+    if (serverReponse.user) {
+      this.setState({
+        user: serverReponse.user,
+        notes: serverReponse.notes,
+        loggedIn: true,
+      })
+    } else {
+      alert("Login failure");
+    }
+ 
   }
 
   onLogout() {
