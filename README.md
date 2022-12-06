@@ -11,6 +11,11 @@
 2. Run this command: `npm start`
 
 ## package installed
+
+Backend Server
 1. `npm install cors`
 2. `npm install monk`
 3. `npm install express-session`
+
+Frontend
+1. `npm install moment -- save`. This is for date formatting
