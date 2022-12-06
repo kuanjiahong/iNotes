@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
 import React from 'react';
+import Moment from 'moment';
 
 
 class iNotes extends React.Component {
@@ -266,6 +267,7 @@ class Dashboard extends React.Component {
         <div>
           <p>When a note is clicked</p>
           <button type="button" onClick={()=>this.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
+          <p>Last saved: {Moment(this.props.activeNote[0].lastsavedtime).format('HH:mm:ss ddd MMM DD YYYY')}</p>
           <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
           <p onClick={this.changeToEditMode}>Content: {this.props.activeNote[0].content}</p>
           <button type="button" onClick={this.changeToAddMode}>New Note</button>
