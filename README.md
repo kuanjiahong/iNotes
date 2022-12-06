@@ -9,3 +9,8 @@
 ## Run react app
 1. Change directory to noteapp
 2. Run this command: `npm start`
+
+## package installed
+1. `npm install cors`
+2. `npm install monk`
+3. `npm install express-session`
