@@ -80,13 +80,13 @@ router.get('/getnote', (req, res) => {
 router.post('/addnote', (req,res) => {
     const noteTitle = req.body.title;
     const noteContent = req.body.content;
-    const userId = req.cookies.userId;
-    const timestamp = new Date.now();
+    const userId = req.session.userId;
+    const timestamp = Date.now();
     let noteDocument = {
         lastsavedtime: timestamp,
         title: noteTitle,
         content: noteContent,
-        userId: userId
+        userId: monk.id(userId)
     };
     let responseData = {
         error: "",
