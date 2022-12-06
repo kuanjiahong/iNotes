@@ -165,7 +165,6 @@ class iNotes extends React.Component {
 }
 
 class Sidebar extends React.Component {
-  // TODO sort notes in reverse chronological order
   constructor(props) {
     super(props)
     this.state = {
@@ -203,6 +202,7 @@ class Sidebar extends React.Component {
   render() {
     const length = this.props.notes.length;
     const notes = this.props.notes;
+    const sortedNotes = notes.sort((a, b) =>  b.lastsavedtime - a.lastsavedtime)
     if (length > 0) {
       return (
       <menu>
@@ -212,7 +212,7 @@ class Sidebar extends React.Component {
         <p>Notes ({length})</p>
         <ul>
           {
-           notes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
+           sortedNotes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
           }
         </ul>
       </menu>
