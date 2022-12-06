@@ -433,17 +433,17 @@ class LoginForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='login-form'>
         <h1>iNotes</h1>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Name:
-          </label>
+          <div className='input-container'>
+            <label>Name:</label>
             <input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} placeholder="Name" />
-          <label>
-            Password:
-          </label>
+          </div>
+          <div className='input-container'>
+            <label>Password:</label>
             <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="Password" />
+          </div>
           <input type="submit" value="Sign in"/>
         </form>
       </div>
