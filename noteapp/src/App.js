@@ -69,23 +69,67 @@ class iNotes extends React.Component {
   }
 }
 
-function Sidebar(props) {
-  const notes = props.notes;
-  if (notes.length > 0) {
-    return (
+class Sidebar extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      notes: props.notes,
+      searchString: "",
+    }
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+
+  }
+
+  handleInputChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+    this.setState({
+      [name]: value
+    })
+  }
+
+  
+  handleSubmit(event) {
+    event.preventDefault();
+    $.ajax({
+      method: "GET",
+      data: {
+        searchstr: this.state.searchString,
+      },
+      xhrFields: { withCredentials: true },
+      url: "http://localhost:3001/searchnotes",
+      success: (result) => {console.log(result)},
+      error: (err) => {alert("Error: " + err)},
+    });
+  }
+
+  render() {
+    const length = this.state.notes.length;
+    const notes = this.state.notes;
+    if (length > 0) {
+      return (
       <menu>
-        <p>Notes ({notes.length})</p>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
+        </form>
+        <p>Notes ({length})</p>
         <ul>
           {
-            notes.map(note => <li key={note._id}>{note.title}</li>)
+           notes.map(note => <li key={note._id}>{note.title}</li>)
           }
         </ul>
       </menu>
-    )
 
-  } else {
-    return <p>No notes</p>
+      )
+    } else {
+      return <p>No notes</p>
+    }
   }
+
+
+
 }
 
 
@@ -97,21 +141,26 @@ class Dashboard extends React.Component {
       addNote: false
     }
     this.handleNewNoteClicked = this.handleNewNoteClicked.bind(this)
-    this.handleClicked = this.handleClicked.bind(this)
+    this.saveClicked = this.saveClicked.bind(this)
+    this.cancelClicked = this.cancelClicked.bind(this)
   }
 
   handleNewNoteClicked() {
     this.setState({addNote: true})
   }
 
-  handleClicked() {
+  saveClicked() {
+    this.setState({addNote: false})
+  }
+
+  cancelClicked() {
     this.setState({addNote: false})
   }
 
   render() {
     if (this.state.addNote) {
       return (
-        <NewNotePage handleClicked={this.handleClicked}/>
+        <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
       )
     }
     return <AddNote onNewNoteClicked={this.handleNewNoteClicked}/>
@@ -128,11 +177,12 @@ class NewNotePage extends React.Component {
     }
   }
 
+
   render() {
     return (
     <div>
-      <button type="button" onClick={this.props.handleClicked}>Save</button>
-      <button type="button" onClick={this.props.handleClicked}>Cancel</button>
+      <button type="button" onClick={this.props.saveClicked}>Save</button>
+      <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
     </div>
     )
   }
@@ -202,11 +252,11 @@ class LoginForm extends React.Component {
           <label>
             Name:
           </label>
-            <input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} />
+            <input type="text" name="name" value={this.state.name} onChange={this.handleInputChange} placeholder="Name" />
           <label>
             Password:
           </label>
-            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} />
+            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} placeholder="Password" />
           <input type="submit" value="Sign in"/>
         </form>
       </div>
