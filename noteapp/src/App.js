@@ -83,9 +83,24 @@ class iNotes extends React.Component {
 
   }
 
-  updateNote(title, content) {
+  updateNote(noteid, title, content) {
     alert("Update note on backend");
-    alert(`Note updated! title: ${title} Content: ${content}`);
+    alert(`Note updated! id: ${noteid}  title: ${title} Content: ${content}`);
+    $.ajax({
+      method: "PUT",
+      data: {
+        title: title,
+        content: content,
+      },
+      url: "http://localhost:3001/savenote/" + noteid,
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        console.log(result)
+        this.getAllData();
+        this.getActiveNote(noteid);
+      },
+      error: (err) => alert("Error: " + err),
+    });
   }
 
   deleteNote(noteId) {
@@ -227,13 +242,13 @@ class Dashboard extends React.Component {
     this.setState({editNoteMode: true})
   }
 
-  saveClicked(title, content, mode) {
+  saveClicked(noteid, title, content, mode) {
     alert(`Note saved! title: ${title} Content: ${content}`);
     this.setState({addNoteMode: false,editNoteMode: false})
     if (mode === "NEW") {
       this.props.createNote(title, content);
     } else if (mode === "UPDATE") {
-      this.props.updateNote(title, content);
+      this.props.updateNote(noteid, title, content);
     }
   }
 
@@ -313,7 +328,7 @@ class NewNotePage extends React.Component {
       <input type="text" name="title" placeholder='Note title' onChange={this.handleInputChange}/>
       <label>Content </label>
       <textarea name="content" value={this.state.value} placeholder="Note content" onChange={this.handleInputChange} />
-      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, "NEW")}}>Save</button>
+      <button type="button" onClick={()=>{this.props.saveClicked(0, this.state.title, this.state.content, "NEW")}}>Save</button>
       <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
     </div>
     )
@@ -345,9 +360,9 @@ class EditNotePage extends React.Component {
     return (
       <div>
       <p>Edit Mode</p>
-      <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title"/>
-      <textarea name='content' defaultValue={this.state.content} placeholder="Note content" />
-      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, "UPDATE")}}>Save</button>
+      <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title" onChange={this.handleInputChange}/>
+      <textarea name='content' defaultValue={this.state.content} placeholder="Note content" onChange={this.handleInputChange} />
+      <button type="button" onClick={()=>{this.props.saveClicked(this.props.activeNote[0]._id, this.state.title, this.state.content, "UPDATE")}}>Save</button>
       <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
     </div>
     )
