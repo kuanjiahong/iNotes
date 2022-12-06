@@ -154,8 +154,10 @@ class iNotes extends React.Component {
       return (
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
-          <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
-          <Dashboard activeNote={this.state.activeNote} deleteNote={this.deleteNote} createNote={this.createNote} updateNote={this.updateNote} />
+          <div>
+            <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
+            <Dashboard activeNote={this.state.activeNote} deleteNote={this.deleteNote} createNote={this.createNote} updateNote={this.updateNote} />
+          </div>
         </div>
       )
     } else {
@@ -389,7 +391,7 @@ function Header(props) {
       <div className='header-container'>
         <div className='profile-container'>
           <img className='icon-size' src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
-          <p className='mb-0'>{props.name}</p>
+          <p className='pl-1 mb-0'>{props.name}</p>
         </div>
         <div className='logout-container'>
           <button type='button' onClick={props.handleLogout}>Logout</button>
