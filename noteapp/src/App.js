@@ -154,7 +154,7 @@ class iNotes extends React.Component {
       return (
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
-          <div>
+          <div className='main-container'>
             <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
             <Dashboard activeNote={this.state.activeNote} deleteNote={this.deleteNote} createNote={this.createNote} updateNote={this.updateNote} />
           </div>
@@ -207,7 +207,7 @@ class Sidebar extends React.Component {
     const sortedNotes = notes.sort((a, b) =>  b.lastsavedtime - a.lastsavedtime)
     if (length > 0) {
       return (
-      <menu>
+      <menu className='menu-container'>
         <form onSubmit={this.handleSubmit}>
           <input type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
         </form>
@@ -280,7 +280,7 @@ class Dashboard extends React.Component {
   render() {
     if (this.state.addNoteMode) {
       return (
-        <div>
+        <div className='dashboard-container'>
           <p>When new note is clicked</p>
           <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
         </div>
@@ -292,7 +292,7 @@ class Dashboard extends React.Component {
     } 
     else if (this.props.activeNote.length > 0) {
       return(
-        <div>
+        <div className='dashboard-container'>
           <p>When a note is clicked</p>
           <button type="button" onClick={()=>this.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
           <p>Last saved: {Moment(this.props.activeNote[0].lastsavedtime).format('HH:mm:ss ddd MMM DD YYYY')}</p>
@@ -303,7 +303,7 @@ class Dashboard extends React.Component {
       ) 
     } else {
       return (
-        <div>
+        <div className='dashboard-container'>
           <p>When user first logged in</p>
           <button type="button" onClick={this.changeToAddMode}>New Note</button>
         </div>

@@ -87,3 +87,24 @@
 .text-center {
   text-align: center;
 }
+
+.main-container {
+  display: flex;
+  margin: 1;
+  margin: 1rem 1rem 0;
+  border: 1px solid black;
+}
+
+.menu-container {
+  border-right: 1px solid black;
+  padding: 1rem;
+  margin: 0;
+}
+
+ul {
+  padding: 1rem;
+}
+
+.dashboard-container {
+  flex-grow: 2;
+}
