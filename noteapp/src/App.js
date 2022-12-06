@@ -52,8 +52,6 @@ class iNotes extends React.Component {
       },
       error: (err) => alert("Error: " + err),
     });
-    // ajax call
-    // this.state.setState({activeNotes: []});
   }
 
   onLoggedIn(serverReponse) {
@@ -70,7 +68,13 @@ class iNotes extends React.Component {
       method: "GET",
       url: "http://localhost:3001/logout",
       xhrFields: { withCredentials: true },
-      success: () => this.setState({loggedIn: false}),
+      success: () => this.setState({
+        loggedIn: false,
+        userId: "",
+        user:"",
+        note:"",
+        activeNote: []
+      }),
       error: (err) => alert("Error: " + err),
     });
   }
@@ -158,7 +162,6 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      activeNote: props.activeNote,
       addNote: false
     }
     this.handleNewNoteClicked = this.handleNewNoteClicked.bind(this)
@@ -181,10 +184,29 @@ class Dashboard extends React.Component {
   render() {
     if (this.state.addNote) {
       return (
-        <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
+        <div>
+          <p>When new note is clicked</p>
+          <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
+        </div>
+      )
+    } else if (this.props.activeNote.length > 0) {
+      return(
+        <div>
+          <p>When a note is clicked</p>
+          <p>Last saved time: {this.props.activeNote[0].lastsavedtime}</p>
+          <p>Title: {this.props.activeNote[0].title}</p>
+          <p>Content: {this.props.activeNote[0].content}</p>
+          <AddNote onNewNoteClicked={this.handleNewNoteClicked}/>
+        </div>
+      ) 
+    } else {
+      return (
+        <div>
+          <p>When user first logged in</p>
+          <AddNote onNewNoteClicked={this.handleNewNoteClicked} />
+        </div>
       )
     }
-    return <AddNote onNewNoteClicked={this.handleNewNoteClicked}/>
   }
 }
 
