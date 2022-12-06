@@ -385,10 +385,16 @@ class EditNotePage extends React.Component {
 function Header(props) {
   return (
     <div>
-      <h1>iNotes</h1>
-      <img src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
-      <p>{props.name}</p>
-      <button type='button' onClick={props.handleLogout}>Logout</button>
+      <h1 className='text-center'>iNotes</h1>
+      <div className='header-container'>
+        <div className='profile-container'>
+          <img className='icon-size' src={"http://localhost:3001/" + props.icon} alt="user-icon"/>
+          <p className='mb-0'>{props.name}</p>
+        </div>
+        <div className='logout-container'>
+          <button type='button' onClick={props.handleLogout}>Logout</button>
+        </div>
+      </div>
     </div>
   )
 }
