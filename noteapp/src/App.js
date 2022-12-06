@@ -12,10 +12,12 @@ class iNotes extends React.Component {
       userId: "",
       user:"",
       notes:"",
+      activeNote: [],
     }
 
     this.onLoggedIn = this.onLoggedIn.bind(this)
     this.onLogout = this.onLogout.bind(this)
+    this.getActiveNote = this.getActiveNote.bind(this)
     
   }
 
@@ -33,6 +35,25 @@ class iNotes extends React.Component {
       },
       error: (err) => console.error(err)
     });
+  }
+
+  getActiveNote(noteId) {
+    console.log(`Note clicked: ${noteId}`);
+    $.ajax({
+      method: "GET",
+      data:{
+        noteid: noteId
+      },
+      url: "http://localhost:3001/getnote",
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        console.log(`getActiveNote: ${result}`);
+        this.setState({activeNote: result.note})
+      },
+      error: (err) => alert("Error: " + err),
+    });
+    // ajax call
+    // this.state.setState({activeNotes: []});
   }
 
   onLoggedIn(serverReponse) {
@@ -59,8 +80,8 @@ class iNotes extends React.Component {
       return (
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} onLogout={this.onLogout}/>
-          <Sidebar notes={this.state.notes} />
-          <Dashboard />
+          <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
+          <Dashboard activeNote={this.state.activeNote}/>
         </div>
       )
     } else {
@@ -117,7 +138,7 @@ class Sidebar extends React.Component {
         <p>Notes ({length})</p>
         <ul>
           {
-           notes.map(note => <li key={note._id}>{note.title}</li>)
+           notes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
           }
         </ul>
       </menu>
@@ -137,7 +158,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      activeNotes: "",
+      activeNote: props.activeNote,
       addNote: false
     }
     this.handleNewNoteClicked = this.handleNewNoteClicked.bind(this)
