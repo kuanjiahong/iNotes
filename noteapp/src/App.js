@@ -104,7 +104,17 @@ class iNotes extends React.Component {
   }
 
   deleteNote(noteId) {
-    alert(`Note ${noteId} is deleted`);
+    alert(`Note ${noteId} will be deleted`);
+    $.ajax({
+      method: "DELETE",
+      url: "http://localhost:3001/deletenote/" + noteId,
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        console.log(result)
+        this.getAllData();
+      },
+      error: (err) => alert("Error: " + err),
+    });
   }
 
 
