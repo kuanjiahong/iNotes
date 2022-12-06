@@ -112,6 +112,7 @@ class iNotes extends React.Component {
       success: (result) => {
         console.log(result)
         this.getAllData();
+        this.getActiveNote(noteId);
       },
       error: (err) => alert("Error: " + err),
     });
