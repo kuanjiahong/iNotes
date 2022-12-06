@@ -17,7 +17,6 @@ class iNotes extends React.Component {
 
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
-    this.onLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
     this.handleDeleteClicked = this.handleDeleteClicked.bind(this)
     
