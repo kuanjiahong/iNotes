@@ -175,53 +175,65 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      addNote: false
+      addNoteMode: false,
+      editNoteMode: false,
     }
     this.handleNewNoteClicked = this.handleNewNoteClicked.bind(this)
     this.saveClicked = this.saveClicked.bind(this)
     this.cancelClicked = this.cancelClicked.bind(this)
+    this.changeToEditMode = this.changeToEditMode.bind(this)
   }
 
+
   handleNewNoteClicked() {
-    this.setState({addNote: true})
+    console.log("New note button clicked");
+    this.setState({addNoteMode: true})
   }
 
   saveClicked(title, content, timestamp) {
     alert(`Note saved! title: ${title} Content: ${content}  Timestamp: ${timestamp}`);
-    this.setState({addNote: false})
+    this.setState({addNoteMode: false,editNoteMode: false})
   }
 
   cancelClicked() {
     if (window.confirm("Are you sure you want to cancel?")) {
-      this.setState({addNote: false})
+      this.setState({addNoteMode: false, editNoteMode: false})
     }
-    
+  }
+
+  changeToEditMode() {
+    console.log("Change to edit mode");
+    this.setState({editNoteMode: true})
   }
 
   render() {
-    if (this.state.addNote) {
+    if (this.state.addNoteMode) {
       return (
         <div>
           <p>When new note is clicked</p>
           <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
         </div>
       )
-    } else if (this.props.activeNote.length > 0) {
+    } else if (this.state.editNoteMode) {
+      return (
+        <EditNotePage activeNote={this.props.activeNote} saveClicked={this.saveClicked} cancelClicked={this.cancelClicked} />
+      )
+    } 
+    else if (this.props.activeNote.length > 0) {
       return(
         <div>
           <p>When a note is clicked</p>
           <button type="button" onClick={()=>this.props.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
-          <p>Last saved time: {this.props.activeNote[0].lastsavedtime}</p>
-          <p>Title: {this.props.activeNote[0].title}</p>
-          <p>Content: {this.props.activeNote[0].content}</p>
-          <AddNoteButton onNewNoteClicked={this.handleNewNoteClicked}/>
+          <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
+          <p onClick={this.changeToEditMode}>Content: {this.props.activeNote[0].content}</p>
+          <button type="button" onClick={this.handleNewNoteClicked}>New Note</button>
         </div>
       ) 
     } else {
       return (
         <div>
           <p>When user first logged in</p>
-          <AddNoteButton onNewNoteClicked={this.handleNewNoteClicked} />
+          <button type="button" onClick={this.handleNewNoteClicked}>New Note</button>
         </div>
       )
     }
@@ -264,9 +276,41 @@ class NewNotePage extends React.Component {
   }
 }
 
-function AddNoteButton(props) {
-  return <button type="button" onClick={props.onNewNoteClicked}>New Note</button>
+
+class EditNotePage extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      title: props.activeNote[0].title,
+      content: props.activeNote[0].content,
+    }
+    this.handleInputChange = this.handleInputChange.bind(this)
+  }
+
+  handleInputChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+    this.setState({
+      [name]: value
+    })
+  }
+
+
+  render() {
+    return (
+      <div>
+      <p>Edit Mode</p>
+      <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title"/>
+      <textarea name='content' defaultValue={this.state.content} placeholder="Note content" />
+      <button type="button" onClick={()=>{this.props.saveClicked(this.state.title, this.state.content, Date.now())}}>Save</button>
+      <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
+    </div>
+    )
+  }
+
 }
+  
 
 function Header(props) {
   return (
