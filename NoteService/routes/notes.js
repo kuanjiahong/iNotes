@@ -66,7 +66,7 @@ router.post('/signin', (req, res)=> {
 
         res.json(responseData);
     }).catch(err=> {
-        responseData.error = err;
+        responseData.error = err.toString();
         res.send(responseData);
     });
 
