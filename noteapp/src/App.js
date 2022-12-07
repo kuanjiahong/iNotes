@@ -335,10 +335,7 @@ class Dashboard extends React.Component {
   render() {
     if (this.props.addNoteMode) {
       return (
-        <div className='dashboard-container'>
-          <p>When new note is clicked</p>
           <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
-        </div>
       )
     } else if (this.props.editNoteMode) {
       return (
@@ -399,13 +396,21 @@ class NewNotePage extends React.Component {
 
   render() {
     return (
-    <div>
-      <label>Title</label>
-      <input type="text" name="title" placeholder='Note title' onChange={this.handleInputChange}/>
-      <label>Content </label>
-      <textarea name="content" value={this.state.value} placeholder="Note content" onChange={this.handleInputChange} />
-      <button type="button" onClick={()=>{this.props.saveClicked(0, this.state.title, this.state.content, "NEW")}}>Save</button>
-      <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
+    <div className='dashboard-container'>
+      <div className='save-cancel-button-container'>
+        <button type="button" onClick={()=>{this.props.saveClicked(0, this.state.title, this.state.content, "NEW")}}>Save</button>
+        <button className='ml-1' type="button" onClick={this.props.cancelClicked}>Cancel</button>
+      </div>
+      <div className='add-note-mode-container'>
+        <div className='input-container'>
+          <label className='mb-1'>Title</label>
+          <input type="text" name="title" placeholder='Note title' onChange={this.handleInputChange}/>
+        </div>
+        <div className='input-container'>
+          <label className='mb-1'>Content </label>
+          <textarea name="content" value={this.state.value} placeholder="Note content" onChange={this.handleInputChange} />
+        </div>
+      </div>
     </div>
     )
   }
@@ -448,8 +453,14 @@ class EditNotePage extends React.Component {
             </button>
         </div>
         <div className='edit-note-mode-container'>
-          <input className='mb-1' type="text" name="title" defaultValue={this.state.title} placeholder="Note title" onChange={this.handleInputChange}/>
-          <textarea name='content' defaultValue={this.state.content} placeholder="Note content" onChange={this.handleInputChange} />
+          <div className='input-container'>
+            <label className='mb-1'>Title:</label>
+            <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title" onChange={this.handleInputChange}/>
+          </div>
+          <div className='input-container'>
+            <label className='mb-1'>Content:</label>
+            <textarea name='content' defaultValue={this.state.content} placeholder="Note content" onChange={this.handleInputChange} />
+          </div>
         </div>
       </div>
     )

@@ -165,7 +165,8 @@
   cursor: pointer;
 }
 
-.edit-note-mode-container {
+.edit-note-mode-container,
+.add-note-mode-container {
   display: flex;
   flex-direction: column;
   width: 50%;
