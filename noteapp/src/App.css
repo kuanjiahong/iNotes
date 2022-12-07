@@ -38,7 +38,7 @@
 }
 
 
-/* my css */
+/* my css mobile view is the default */
 
 .login-form {
   display: flex;
@@ -93,24 +93,34 @@
   margin: 1;
   margin: 1rem 1rem 0;
   border: 1px solid black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
 }
 
 .menu-container {
-  border-right: 1px solid black;
-  padding: 1rem;
+  border-bottom: 1px solid black;
   margin: 0;
+  width: 100%;
+  text-align: center;
 }
 
-ul {
+.note-list {
   padding: 1rem;
+  margin: auto;
+  width: min-content;
 }
 
 .dashboard-container {
-  display: flex;
-  padding: 1rem;
-  flex-grow: 2;
+ width: 100%;
 }
 
-.nothing {
-  align-items: flex-end;
+.new-button-container {
+  text-align: end;
+  padding: 1rem;
+}
+
+.empty-container {
+  margin: 10%;
 }
