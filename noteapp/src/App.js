@@ -218,17 +218,19 @@ class Sidebar extends React.Component {
     const sortedNotes = notes.sort((a, b) =>  this.getEpochTime(b.lastsavedtime) - this.getEpochTime(a.lastsavedtime))
     if (length > 0) {
       return (
-      <menu className='menu-container'>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
-        </form>
-        <p>Notes ({length})</p>
-        <ul>
-          {
-           sortedNotes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
-          }
-        </ul>
-      </menu>
+      <div className='menu-container'>
+        <menu>
+          <form onSubmit={this.handleSubmit}>
+            <input type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
+          </form>
+          <p className='mb-0'>Notes ({length})</p>
+          <ul className='note-list'>
+            {
+             sortedNotes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
+            }
+          </ul>
+        </menu>
+      </div>
 
       )
     } else {
@@ -314,8 +316,11 @@ class Dashboard extends React.Component {
       ) 
     } else {
       return (
-        <div className='dashboard-container nothing'>
-          <div><button type="button" onClick={this.changeToAddMode}>New Note</button></div>
+        <div className='dashboard-container'>
+          <div className='empty-container'></div>
+          <div className='new-button-container'>
+            <button type="button" onClick={this.changeToAddMode}>New Note</button>
+          </div>
         </div>
       )
     }
