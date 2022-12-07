@@ -13,11 +13,19 @@ class iNotes extends React.Component {
       user:"",
       notes:"",
       activeNote: [],
+      addNoteMode: false,
+      editNoteMode: false,
     }
+
+    this.changeToAddMode = this.changeToAddMode.bind(this)
+    this.changeToEditMode = this.changeToEditMode.bind(this)
+    
+    this.resetModeState = this.resetModeState.bind(this)
 
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
+
     this.getAllData = this.getAllData.bind(this)
     this.createNote = this.createNote.bind(this)
     this.updateNote = this.updateNote.bind(this)
@@ -27,6 +35,21 @@ class iNotes extends React.Component {
 
   componentDidMount() {
     this.getAllData();
+  }
+
+  changeToAddMode() {
+    console.log("New note button clicked");
+    this.setState({addNoteMode: true})
+  }
+
+  changeToEditMode() {
+    console.log("Change to edit mode");
+    this.setState({editNoteMode: true})
+  }
+
+  resetModeState() {
+    console.log("Reset add note mode and edit note mode");
+    this.setState({addNoteMode: false,editNoteMode: false})
   }
 
   getAllData() {
@@ -47,6 +70,7 @@ class iNotes extends React.Component {
 
   getActiveNote(noteId) {
     console.log(`Note clicked: ${noteId}`);
+    this.resetModeState();
     $.ajax({
       method: "GET",
       data:{
@@ -80,6 +104,8 @@ class iNotes extends React.Component {
       error: (err) => alert("Error: " + err),
     });
 
+    this.setState({addNoteMode: false,editNoteMode: false})
+
   }
 
   updateNote(noteId, title, content) {
@@ -100,6 +126,9 @@ class iNotes extends React.Component {
       },
       error: (err) => alert("Error: " + err),
     });
+
+    this.setState({addNoteMode: false,editNoteMode: false})
+
   }
 
   deleteNote(noteId) {
@@ -154,8 +183,24 @@ class iNotes extends React.Component {
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
           <div className='main-container'>
-            <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote} activeNote={this.state.activeNote}/>
-            <Dashboard activeNote={this.state.activeNote} deleteNote={this.deleteNote} createNote={this.createNote} updateNote={this.updateNote} />
+            <Sidebar 
+              notes={this.state.notes} 
+              activeNote={this.state.activeNote}
+              addNoteMode={this.state.addNoteMode} 
+              editNoteMode={this.state.editNoteMode}
+              getActiveNote={this.getActiveNote} 
+               />
+            <Dashboard 
+              activeNote={this.state.activeNote} 
+              addNoteMode={this.state.addNoteMode} 
+              editNoteMode={this.state.editNoteMode}
+              deleteNote={this.deleteNote} 
+              createNote={this.createNote} 
+              updateNote={this.updateNote} 
+              resetModeState={this.resetModeState}
+              changeToAddMode={this.changeToAddMode}
+              changeToEditMode={this.changeToEditMode}
+              />
           </div>
         </div>
       )
@@ -215,8 +260,9 @@ class Sidebar extends React.Component {
     const length = this.props.notes.length;
     let notes = this.props.notes;
     const sortedNotes = notes.sort((a, b) =>  this.getEpochTime(b.lastsavedtime) - this.getEpochTime(a.lastsavedtime))
-    const activeNoteId = this.props.activeNote.length > 0 ? this.props.activeNote[0]._id : -1;
-    console.log("Hello " + activeNoteId)
+    const activeNoteId = this.props.activeNote.length > 0  && (!this.props.addNoteMode && !this.props.editNoteMode) 
+              ? this.props.activeNote[0]._id 
+              : -1;
     if (length > 0) {
       return (
       <div className='menu-container'>
@@ -254,35 +300,23 @@ class Sidebar extends React.Component {
 class Dashboard extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      addNoteMode: false,
-      editNoteMode: false,
-    }
-    this.changeToAddMode = this.changeToAddMode.bind(this)
-    this.changeToEditMode = this.changeToEditMode.bind(this)
     this.saveClicked = this.saveClicked.bind(this)
     this.deleteClicked = this.deleteClicked.bind(this)
     this.cancelClicked = this.cancelClicked.bind(this)
   }
 
 
-  changeToAddMode() {
-    console.log("New note button clicked");
-    this.setState({addNoteMode: true})
-  }
-
-  changeToEditMode() {
-    console.log("Change to edit mode");
-    this.setState({editNoteMode: true})
-  }
-
   saveClicked(noteid, title, content, mode) {
-    alert(`Note saved! title: ${title} Content: ${content}`);
-    this.setState({addNoteMode: false,editNoteMode: false})
-    if (mode === "NEW") {
-      this.props.createNote(title, content);
-    } else if (mode === "UPDATE") {
-      this.props.updateNote(noteid, title, content);
+    if (title === "" && content === "") {
+      alert("Please input title and content");
+      return false;
+    } else {
+      alert(`Note saved! title: ${title} Content: ${content}`);
+      if (mode === "NEW") {
+        this.props.createNote(title, content);
+      } else if (mode === "UPDATE") {
+        this.props.updateNote(noteid, title, content);
+      }
     }
   }
 
@@ -294,19 +328,19 @@ class Dashboard extends React.Component {
 
   cancelClicked() {
     if (window.confirm("Are you sure you want to cancel?")) {
-      this.setState({addNoteMode: false, editNoteMode: false})
+      this.props.resetModeState();
     }
   }
 
   render() {
-    if (this.state.addNoteMode) {
+    if (this.props.addNoteMode) {
       return (
         <div className='dashboard-container'>
           <p>When new note is clicked</p>
           <NewNotePage saveClicked={this.saveClicked} cancelClicked={this.cancelClicked}/>
         </div>
       )
-    } else if (this.state.editNoteMode) {
+    } else if (this.props.editNoteMode) {
       return (
         <EditNotePage activeNote={this.props.activeNote} saveClicked={this.saveClicked} cancelClicked={this.cancelClicked} />
       )
@@ -319,12 +353,12 @@ class Dashboard extends React.Component {
           </div>
           <div className='note-container'>
             <p>Last saved: {this.props.activeNote[0].lastsavedtime}</p>
-            <p className='editable' onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
+            <p className='editable' onClick={this.props.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
             <p>Content:</p>
-            <p className='editable' onClick={this.changeToEditMode}>{this.props.activeNote[0].content}</p>
+            <p className='editable' onClick={this.props.changeToEditMode}>{this.props.activeNote[0].content}</p>
           </div>
           <div className='new-button-container'>
-            <button type="button" onClick={this.changeToAddMode}>New Note</button>
+            <button type="button" onClick={this.props.changeToAddMode}>New Note</button>
           </div>
         </div>
       ) 
@@ -333,7 +367,7 @@ class Dashboard extends React.Component {
         <div className='dashboard-container'>
           <div className='empty-container'></div>
           <div className='new-button-container'>
-            <button type="button" onClick={this.changeToAddMode}>New Note</button>
+            <button type="button" onClick={this.props.changeToAddMode}>New Note</button>
           </div>
         </div>
       )
