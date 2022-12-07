@@ -147,7 +147,7 @@ router.put('/savenote/:noteid', (req, res) => {
         responseData.success = newTimestamp;
         res.json(responseData);
     }).catch(err => {
-        responseData.error = err;
+        responseData.error = err.toString();
         res.json(responseData);
     })
 });
