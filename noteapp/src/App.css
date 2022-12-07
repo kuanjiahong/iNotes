@@ -105,7 +105,6 @@
 
 .main-container {
   display: flex;
-  margin: 1;
   margin: 1rem 1rem 0;
   border: 1px solid black;
   flex-direction: column;
