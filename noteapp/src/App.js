@@ -2,7 +2,6 @@ import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
 import React from 'react';
-import Moment from 'moment';
 
 
 class iNotes extends React.Component {
@@ -174,7 +173,19 @@ class Sidebar extends React.Component {
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.getEpochTime = this.getEpochTime.bind(this)
 
+  }
+
+  getEpochTime(dateString) {
+    console.log("Get epoch time");
+    let arr = dateString.split(" ");
+    const year = arr[4];
+    const month = arr[2];
+    const day = arr[3];
+    const time = arr[0];
+    let formatString = year + " " + month + " " + day + " " + time
+    return Date.parse(formatString);
   }
 
   handleInputChange(event) {
@@ -203,8 +214,8 @@ class Sidebar extends React.Component {
 
   render() {
     const length = this.props.notes.length;
-    const notes = this.props.notes;
-    const sortedNotes = notes.sort((a, b) =>  b.lastsavedtime - a.lastsavedtime)
+    let notes = this.props.notes;
+    const sortedNotes = notes.sort((a, b) =>  this.getEpochTime(b.lastsavedtime) - this.getEpochTime(a.lastsavedtime))
     if (length > 0) {
       return (
       <menu className='menu-container'>
@@ -295,7 +306,7 @@ class Dashboard extends React.Component {
         <div className='dashboard-container'>
           <p>When a note is clicked</p>
           <button type="button" onClick={()=>this.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
-          <p>Last saved: {Moment(this.props.activeNote[0].lastsavedtime).format('HH:mm:ss ddd MMM DD YYYY')}</p>
+          <p>Last saved: {this.props.activeNote[0].lastsavedtime}</p>
           <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
           <p onClick={this.changeToEditMode}>Content: {this.props.activeNote[0].content}</p>
           <button type="button" onClick={this.changeToAddMode}>New Note</button>
@@ -303,9 +314,8 @@ class Dashboard extends React.Component {
       ) 
     } else {
       return (
-        <div className='dashboard-container'>
-          <p>When user first logged in</p>
-          <button type="button" onClick={this.changeToAddMode}>New Note</button>
+        <div className='dashboard-container nothing'>
+          <div><button type="button" onClick={this.changeToAddMode}>New Note</button></div>
         </div>
       )
     }

@@ -3,6 +3,20 @@ const monk = require('monk');
 var router = express.Router();
 
 
+function createDatebaseTimestemp(dateObj) {
+    let dateString = dateObj.toString();
+    let arr = dateString.split(" ");
+    let slicedArr = arr.slice(0,5)
+    const weekday = slicedArr[0];
+    const month = slicedArr[1];
+    const day = slicedArr[2];
+    const year = slicedArr[3];
+    const time = slicedArr[4];
+    let dbTimestamp = time + " " + weekday + " " + month + " " + day + " " + year;
+    return dbTimestamp;
+}
+
+
 router.get('/load', async (req, res) => {
     if (req.session.userId) {
         let userListCol = req.db.get('userList');
@@ -81,7 +95,7 @@ router.post('/addnote', (req,res) => {
     const noteTitle = req.body.title;
     const noteContent = req.body.content;
     const userId = req.session.userId;
-    const timestamp = Date.now();
+    const timestamp = createDatebaseTimestemp(new Date());
     let noteDocument = {
         lastsavedtime: timestamp,
         title: noteTitle,
@@ -110,7 +124,7 @@ router.put('/savenote/:noteid', (req, res) => {
     const noteid = req.params.noteid;
     const newContent = req.body.content;
     const newTitle = req.body.title;
-    const newTimestamp = Date.now()
+    const newTimestamp = createDatebaseTimestemp(new Date());
     let noteListCol = req.db.get('noteList')
     let updateQuery = {
         title: newTitle,

@@ -106,5 +106,11 @@ ul {
 }
 
 .dashboard-container {
+  display: flex;
+  padding: 1rem;
   flex-grow: 2;
+}
+
+.nothing {
+  align-items: flex-end;
 }
