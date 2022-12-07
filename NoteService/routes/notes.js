@@ -79,7 +79,6 @@ router.get('/logout', (req, res) => {
 
 router.get('/getnote', (req, res) => {
     const noteid = req.query.noteid;
-    console.log(noteid);
     let noteListCol = req.db.get('noteList');
     let responseData = {
         error: "",
@@ -115,7 +114,6 @@ router.post('/addnote', (req,res) => {
     };
     let noteListCol = req.db.get('noteList');
     noteListCol.insert(noteDocument).then((result) => {
-        console.log("Newly inserted _id is: ", result._id);
         responseData.inserted_note_id = result._id;
         res.json(responseData);
 
@@ -143,7 +141,6 @@ router.put('/savenote/:noteid', (req, res) => {
     };
     noteListCol.update({_id: monk.id(noteid)}, {$set: updateQuery})
     .then((result) => {
-        console.log(result);
         responseData.success = newTimestamp;
         res.json(responseData);
     }).catch(err => {
@@ -156,14 +153,11 @@ router.get('/searchnotes', (req, res) => {
     let searchStr = req.query.searchstr;
     let noteListCol = req.db.get('noteList');
     const userId = req.session.userId;
-    console.log(searchStr)
-    console.log(userId);
     let responseData = {
         error: "",
         result: "",
     }
     noteListCol.find({userId: monk.id(userId)}).then((documents) => {
-        console.log(documents);
         let filtered = documents.filter((el) => {
             return el.content.includes(searchStr) || el.title.includes(searchStr);
         });
