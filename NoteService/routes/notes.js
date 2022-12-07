@@ -167,7 +167,6 @@ router.get('/searchnotes', (req, res) => {
         let filtered = documents.filter((el) => {
             return el.content.includes(searchStr) || el.title.includes(searchStr);
         });
-        console.log(filtered);
         responseData.result = filtered;
         res.json(responseData);
     }).catch(err => {
