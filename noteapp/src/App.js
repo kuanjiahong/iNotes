@@ -434,13 +434,24 @@ class EditNotePage extends React.Component {
 
   render() {
     return (
-      <div>
-      <p>Edit Mode</p>
-      <input type="text" name="title" defaultValue={this.state.title} placeholder="Note title" onChange={this.handleInputChange}/>
-      <textarea name='content' defaultValue={this.state.content} placeholder="Note content" onChange={this.handleInputChange} />
-      <button type="button" onClick={()=>{this.props.saveClicked(this.props.activeNote[0]._id, this.state.title, this.state.content, "UPDATE")}}>Save</button>
-      <button type="button" onClick={this.props.cancelClicked}>Cancel</button>
-    </div>
+      <div className='dashboard-container'>
+        <div className='save-cancel-button-container'>
+          <button
+            type="button" 
+            onClick={()=>{this.props.saveClicked(this.props.activeNote[0]._id, this.state.title, this.state.content, "UPDATE")}}>
+            Save
+          </button>
+          <button className='ml-1' 
+            type="button" 
+            onClick={this.props.cancelClicked}>
+              Cancel
+            </button>
+        </div>
+        <div className='edit-note-mode-container'>
+          <input className='mb-1' type="text" name="title" defaultValue={this.state.title} placeholder="Note title" onChange={this.handleInputChange}/>
+          <textarea name='content' defaultValue={this.state.content} placeholder="Note content" onChange={this.handleInputChange} />
+        </div>
+      </div>
     )
   }
 

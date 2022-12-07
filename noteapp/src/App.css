@@ -44,6 +44,28 @@
   box-sizing: border-box;
 }
 
+/* General declaration */
+.pl-1 {
+  padding-left: 1rem;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+
 .login-form {
   display: flex;
   justify-content: center;
@@ -80,17 +102,6 @@
   text-align: center;
 }
 
-.pl-1 {
-  padding-left: 1rem;
-}
-
-.mb-0 {
-  margin-bottom: 0;
-}
-
-.text-center {
-  text-align: center;
-}
 
 .main-container {
   display: flex;
@@ -123,7 +134,9 @@
   flex-direction: column;
 }
 
-.new-button-container, .delete-button-container {
+.new-button-container, 
+.delete-button-container,
+.save-cancel-button-container {
   display: flex;
   align-self: flex-end;
   padding: 1rem;
@@ -139,7 +152,6 @@
   align-self: center;
 }
 
-
 .individual-note:hover {
   cursor: pointer;
   background-color: yellow;
@@ -151,4 +163,11 @@
 
 .editable:hover {
   cursor: pointer;
+}
+
+.edit-note-mode-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: auto;
 }
