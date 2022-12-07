@@ -178,7 +178,6 @@ class Sidebar extends React.Component {
   }
 
   getEpochTime(dateString) {
-    console.log("Get epoch time");
     let arr = dateString.split(" ");
     const year = arr[4];
     const month = arr[2];
