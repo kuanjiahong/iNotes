@@ -171,7 +171,7 @@ router.get('/searchnotes', (req, res) => {
         responseData.result = filtered;
         res.json(responseData);
     }).catch(err => {
-        responseData.error = err;
+        responseData.error = err.toString();
         res.json(err);
     });
 
