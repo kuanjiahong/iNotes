@@ -38,7 +38,7 @@
 }
 
 
-/* my css mobile view is the default */
+/* CSS Default is for mobile view. Desktop size css is declared down below*/
 
 * {
   box-sizing: border-box;
@@ -170,4 +170,9 @@
   flex-direction: column;
   width: 50%;
   margin: auto;
+}
+
+/* Desktop size */
+@media screen and (min-width: 1020px) {
+  
 }
