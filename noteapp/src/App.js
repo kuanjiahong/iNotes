@@ -40,17 +40,14 @@ class iNotes extends React.Component {
   }
 
   changeToAddMode() {
-    console.log("New note button clicked");
     this.setState({addNoteMode: true})
   }
 
   changeToEditMode() {
-    console.log("Change to edit mode");
     this.setState({editNoteMode: true})
   }
 
   resetModeState() {
-    console.log("Reset add note mode and edit note mode");
     this.setState({addNoteMode: false,editNoteMode: false})
   }
 
@@ -71,7 +68,6 @@ class iNotes extends React.Component {
   }
 
   getActiveNote(noteId) {
-    console.log(`Note clicked: ${noteId}`);
     this.resetModeState();
     $.ajax({
       method: "GET",
@@ -81,7 +77,6 @@ class iNotes extends React.Component {
       url: "http://localhost:3001/getnote",
       xhrFields: { withCredentials: true },
       success: (result) => {
-        console.log(`getActiveNote: ${result}`);
         this.setState({activeNote: result.note})
       },
       error: (err) => alert("Error: " + err),
@@ -89,8 +84,6 @@ class iNotes extends React.Component {
   }
 
   createNote(title, content) {
-    alert("Create Note on backend");
-    alert(`Note created! title: ${title} Content: ${content}`);
     $.ajax({
       method: "POST",
       data:{
@@ -111,8 +104,6 @@ class iNotes extends React.Component {
   }
 
   updateNote(noteId, title, content) {
-    alert("Update note on backend");
-    alert(`Note updated! id: ${noteId}  title: ${title} Content: ${content}`);
     $.ajax({
       method: "PUT",
       data: {
@@ -122,7 +113,6 @@ class iNotes extends React.Component {
       url: "http://localhost:3001/savenote/" + noteId,
       xhrFields: { withCredentials: true },
       success: (result) => {
-        console.log(result)
         this.getAllData();
         this.getActiveNote(noteId);
       },
@@ -134,13 +124,11 @@ class iNotes extends React.Component {
   }
 
   deleteNote(noteId) {
-    alert(`Note ${noteId} will be deleted`);
     $.ajax({
       method: "DELETE",
       url: "http://localhost:3001/deletenote/" + noteId,
       xhrFields: { withCredentials: true },
       success: (result) => {
-        console.log(result)
         this.getAllData();
         this.getActiveNote(noteId);
       },
@@ -154,7 +142,6 @@ class iNotes extends React.Component {
   }
 
   handleLogin(serverReponse) {
-    console.log(serverReponse)
     if (serverReponse.user) {
       this.setState({
         user: serverReponse.user,
@@ -259,8 +246,7 @@ class Sidebar extends React.Component {
         },
         xhrFields: { withCredentials: true },
         url: "http://localhost:3001/searchnotes",
-        success: (result) => {
-          console.log(result);
+        success: (result) => { // server will send result in this form: {error: value, result: value}
           this.props.updateSideBar(result.result)
         },
         error: (err) => {alert("Error: " + err)},
@@ -273,9 +259,12 @@ class Sidebar extends React.Component {
     const length = this.props.notes.length;
     let notes = this.props.notes;
     const sortedNotes = notes.sort((a, b) =>  this.getEpochTime(b.lastsavedtime) - this.getEpochTime(a.lastsavedtime))
+
+    // do not insert active css class if the current mode is add note or edit note. Both have to be false in order for active css class to be inserted
     const activeNoteId = this.props.activeNote.length > 0  && (!this.props.addNoteMode && !this.props.editNoteMode) 
               ? this.props.activeNote[0]._id 
               : -1;
+    
     if (length > 0) {
       return (
       <div className='menu-container'>
@@ -329,7 +318,6 @@ class Dashboard extends React.Component {
       alert("Please input title and content");
       return false;
     } else {
-      alert(`Note saved! title: ${title} Content: ${content}`);
       if (mode === "NEW") {
         this.props.createNote(title, content);
       } else if (mode === "UPDATE") {
