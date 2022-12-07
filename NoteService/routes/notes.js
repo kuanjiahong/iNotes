@@ -16,17 +16,23 @@ function createDatebaseTimestemp(dateObj) {
     return dbTimestamp;
 }
 
-
-router.get('/load', async (req, res) => {
+/* check if user have logged in or not */
+router.get('/load', (req, res) => {
     if (req.session.userId) {
+        const userId = req.session.userId;
         let userListCol = req.db.get('userList');
         let noteListCol = req.db.get('noteList');
         let responseData = {error: "", user: "", notes: ""};
-        let user = userListCol.findOne({_id: monk.id(req.session.userId)}).then((currentUser) => currentUser);
-        let note = noteListCol.find({userId: monk.id(req.session.userId)}).then((note) => note);
-        responseData.user = await user;
-        responseData.notes = await note;
-        res.json(responseData);
+        userListCol.findOne({_id: monk.id(userId)}).then((currentUser) => {
+            responseData.user = currentUser;
+            return noteListCol.find({userId: monk.id(userId)});
+        }).then((notes) => {
+            responseData.notes = notes;
+            res.json(responseData);
+        }).catch(err => {
+            responseData.error = err.toString()
+            res.json(responseData);
+        })
     } else {
         res.send("")
     }
