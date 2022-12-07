@@ -30,6 +30,9 @@ class iNotes extends React.Component {
     this.createNote = this.createNote.bind(this)
     this.updateNote = this.updateNote.bind(this)
     this.deleteNote = this.deleteNote.bind(this)
+
+
+    this.updateSideBar = this.updateSideBar.bind(this)
     
   }
 
@@ -147,6 +150,10 @@ class iNotes extends React.Component {
   }
 
 
+  updateSideBar(filteredNotes) {
+    this.setState({notes: filteredNotes});
+  }
+
   handleLogin(serverReponse) {
     console.log(serverReponse)
     if (serverReponse.user) {
@@ -188,7 +195,8 @@ class iNotes extends React.Component {
               activeNote={this.state.activeNote}
               addNoteMode={this.state.addNoteMode} 
               editNoteMode={this.state.editNoteMode}
-              getActiveNote={this.getActiveNote} 
+              getActiveNote={this.getActiveNote}
+              updateSideBar={this.updateSideBar} 
                />
             <Dashboard 
               activeNote={this.state.activeNote} 
@@ -216,9 +224,10 @@ class Sidebar extends React.Component {
     this.state = {
       searchString: "",
     }
+
     this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
     this.getEpochTime = this.getEpochTime.bind(this)
+    this.handleEnter = this.handleEnter.bind(this)
 
   }
 
@@ -242,18 +251,23 @@ class Sidebar extends React.Component {
   }
 
   
-  handleSubmit(event) {
-    event.preventDefault();
-    $.ajax({
-      method: "GET",
-      data: {
-        searchstr: this.state.searchString,
-      },
-      xhrFields: { withCredentials: true },
-      url: "http://localhost:3001/searchnotes",
-      success: (result) => {console.log(result)},
-      error: (err) => {alert("Error: " + err)},
-    });
+  handleEnter(event) {
+    if (event.key === "Enter") {
+      $.ajax({
+        method: "GET",
+        data: {
+          searchstr: this.state.searchString,
+        },
+        xhrFields: { withCredentials: true },
+        url: "http://localhost:3001/searchnotes",
+        success: (result) => {
+          console.log(result);
+          this.props.updateSideBar(result.result)
+        },
+        error: (err) => {alert("Error: " + err)},
+      });
+    }
+
   }
 
   render() {
@@ -267,9 +281,7 @@ class Sidebar extends React.Component {
       return (
       <div className='menu-container'>
         <menu>
-          <form onSubmit={this.handleSubmit}>
-            <input type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
-          </form>
+          <input onKeyUp={this.handleEnter} type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
           <p className='mb-0'>Notes ({length})</p>
           <ul className='note-list'>
             {
@@ -288,7 +300,14 @@ class Sidebar extends React.Component {
 
       )
     } else {
-      return <p>No notes</p>
+      return(
+        <div className='menu-container'>
+          <menu>
+            <input onKeyUp={this.handleEnter} type="text" onChange={this.handleInputChange} name="searchString" placeholder='Search Notes' />
+            <p>No notes</p>
+          </menu>
+        </div>
+      ) 
     }
   }
 
