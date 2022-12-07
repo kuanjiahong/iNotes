@@ -154,7 +154,7 @@ class iNotes extends React.Component {
         <div>
           <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
           <div className='main-container'>
-            <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote}/>
+            <Sidebar notes={this.state.notes} getActiveNote={this.getActiveNote} activeNote={this.state.activeNote}/>
             <Dashboard activeNote={this.state.activeNote} deleteNote={this.deleteNote} createNote={this.createNote} updateNote={this.updateNote} />
           </div>
         </div>
@@ -215,6 +215,8 @@ class Sidebar extends React.Component {
     const length = this.props.notes.length;
     let notes = this.props.notes;
     const sortedNotes = notes.sort((a, b) =>  this.getEpochTime(b.lastsavedtime) - this.getEpochTime(a.lastsavedtime))
+    const activeNoteId = this.props.activeNote.length > 0 ? this.props.activeNote[0]._id : -1;
+    console.log("Hello " + activeNoteId)
     if (length > 0) {
       return (
       <div className='menu-container'>
@@ -225,7 +227,14 @@ class Sidebar extends React.Component {
           <p className='mb-0'>Notes ({length})</p>
           <ul className='note-list'>
             {
-             sortedNotes.map(note => <li className='individual-note' key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
+             sortedNotes.map((note) => 
+             {
+              let noteClass = "individual-note ";
+              if (note._id === activeNoteId) {
+                noteClass += "active";
+              }
+              return <li className={noteClass} key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>
+             })
             }
           </ul>
         </menu>
