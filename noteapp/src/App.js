@@ -155,19 +155,40 @@ class iNotes extends React.Component {
   }
 
   handleLogout() {
-    $.ajax({
-      method: "GET",
-      url: "http://localhost:3001/logout",
-      xhrFields: { withCredentials: true },
-      success: () => this.setState({
-        loggedIn: false,
-        userId: "",
-        user:"",
-        note:"",
-        activeNote: []
-      }),
-      error: (err) => alert("Error: " + err),
-    });
+    if (this.state.addNoteMode === true || this.state.editNoteMode === true) {
+      if (window.confirm("Are you sure to quit editing the note and log out?")) {
+        $.ajax({
+          method: "GET",
+          url: "http://localhost:3001/logout",
+          xhrFields: { withCredentials: true },
+          success: () => this.setState({
+            loggedIn: false,
+            userId: "",
+            user:"",
+            note:"",
+            activeNote: []
+          }),
+          error: (err) => alert("Error: " + err),
+        });
+      } else {
+        return false;
+      }
+    } else {
+      $.ajax({
+        method: "GET",
+        url: "http://localhost:3001/logout",
+        xhrFields: { withCredentials: true },
+        success: () => this.setState({
+          loggedIn: false,
+          userId: "",
+          user:"",
+          note:"",
+          activeNote: []
+        }),
+        error: (err) => alert("Error: " + err),
+      });
+    }
+
   }
 
   render() {
