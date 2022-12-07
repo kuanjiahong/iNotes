@@ -153,11 +153,11 @@
 
 .individual-note:hover {
   cursor: pointer;
-  background-color: yellow;
+  background-color: cyan;
 }
 
 .active {
-  background-color: yellow;
+  background-color: cyan;
 }
 
 .editable:hover {
