@@ -306,12 +306,18 @@ class Dashboard extends React.Component {
     else if (this.props.activeNote.length > 0) {
       return(
         <div className='dashboard-container'>
-          <p>When a note is clicked</p>
-          <button type="button" onClick={()=>this.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
-          <p>Last saved: {this.props.activeNote[0].lastsavedtime}</p>
-          <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
-          <p onClick={this.changeToEditMode}>Content: {this.props.activeNote[0].content}</p>
-          <button type="button" onClick={this.changeToAddMode}>New Note</button>
+          <div className='delete-button-container'>
+            <button type="button" onClick={()=>this.deleteClicked(this.props.activeNote[0]._id)}>Delete</button>
+          </div>
+          <div className='note-container'>
+            <p>Last saved: {this.props.activeNote[0].lastsavedtime}</p>
+            <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
+            <p>Content:</p>
+            <p onClick={this.changeToEditMode}>{this.props.activeNote[0].content}</p>
+          </div>
+          <div className='new-button-container'>
+            <button type="button" onClick={this.changeToAddMode}>New Note</button>
+          </div>
         </div>
       ) 
     } else {
