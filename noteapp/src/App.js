@@ -327,7 +327,7 @@ class Dashboard extends React.Component {
   }
 
   cancelClicked() {
-    if (window.confirm("Are you sure you want to cancel?")) {
+    if (window.confirm("Are you sure to quit editing the note?")) {
       this.props.resetModeState();
     }
   }
