@@ -92,7 +92,7 @@ router.get('/getnote', (req, res) => {
         responseData.note = note;
         res.json(responseData);
     }).catch(err => {
-        responseData.error = err;
+        responseData.error = err.toString();
         res.json(responseData);
     });
 });
