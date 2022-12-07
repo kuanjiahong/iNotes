@@ -138,3 +138,17 @@
   flex-direction: column;
   align-self: center;
 }
+
+
+.individual-note:hover {
+  cursor: pointer;
+  background-color: yellow;
+}
+
+.active {
+  background-color: yellow;
+}
+
+.editable:hover {
+  cursor: pointer;
+}

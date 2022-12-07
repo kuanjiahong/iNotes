@@ -226,7 +226,7 @@ class Sidebar extends React.Component {
           <p className='mb-0'>Notes ({length})</p>
           <ul className='note-list'>
             {
-             sortedNotes.map(note => <li key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
+             sortedNotes.map(note => <li className='individual-note' key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>)
             }
           </ul>
         </menu>
@@ -311,9 +311,9 @@ class Dashboard extends React.Component {
           </div>
           <div className='note-container'>
             <p>Last saved: {this.props.activeNote[0].lastsavedtime}</p>
-            <p onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
+            <p className='editable' onClick={this.changeToEditMode}>Title: {this.props.activeNote[0].title}</p>
             <p>Content:</p>
-            <p onClick={this.changeToEditMode}>{this.props.activeNote[0].content}</p>
+            <p className='editable' onClick={this.changeToEditMode}>{this.props.activeNote[0].content}</p>
           </div>
           <div className='new-button-container'>
             <button type="button" onClick={this.changeToAddMode}>New Note</button>
