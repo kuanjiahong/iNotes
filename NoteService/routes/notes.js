@@ -184,7 +184,7 @@ router.delete('/deletenote/:noteid', (req, res) => {
         responseData.success = "Deleted successfully";
         res.send("");
     }).catch(err => {
-        res.json({error: err});
+        res.json({error: err.toString()});
     });
 })
 
