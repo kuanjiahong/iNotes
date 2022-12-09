@@ -127,7 +127,7 @@
 .note-list {
   padding: 1rem;
   margin: auto;
-  width: min-content;
+  width: auto;
 }
 
 .dashboard-container {
