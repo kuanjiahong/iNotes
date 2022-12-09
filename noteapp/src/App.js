@@ -235,7 +235,18 @@ class Sidebar extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this)
     this.getEpochTime = this.getEpochTime.bind(this)
     this.handleEnter = this.handleEnter.bind(this)
+    this.formatNoteTitle = this.formatNoteTitle.bind(this)
 
+  }
+
+  // format note title that are too long to just "..."
+  formatNoteTitle(noteTitle) {
+    if (noteTitle.length > 10) {
+      let newString = noteTitle.slice(0, 5).concat("...")
+      return newString
+    } else {
+      return noteTitle
+    }
   }
 
   getEpochTime(dateString) {
@@ -300,7 +311,7 @@ class Sidebar extends React.Component {
               if (note._id === activeNoteId) {
                 noteClass += "active";
               }
-              return <li className={noteClass} key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{note.title}</li>
+              return <li className={noteClass} key={note._id} onClick={()=>{this.props.getActiveNote(note._id)}}>{this.formatNoteTitle(note.title)}</li>
              })
             }
           </ul>
