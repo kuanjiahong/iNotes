@@ -128,6 +128,8 @@
   padding: 1rem;
   margin: auto;
   width: auto;
+  display: inline-block;
+  text-align: left;
 }
 
 .dashboard-container {
