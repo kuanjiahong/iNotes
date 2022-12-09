@@ -393,7 +393,7 @@ class Dashboard extends React.Component {
             <p className='editable' onClick={this.props.changeToEditMode}>{this.props.activeNote[0].content}</p>
           </div>
           <div className='new-button-container'>
-            <button type="button" onClick={this.props.changeToAddMode}>New Note</button>
+            <button type="button" onClick={this.props.changeToAddMode}>	+ New Note</button>
           </div>
         </div>
       ) 
@@ -402,7 +402,7 @@ class Dashboard extends React.Component {
         <div className='dashboard-container'>
           <div className='empty-container'></div>
           <div className='new-button-container'>
-            <button type="button" onClick={this.props.changeToAddMode}>New Note</button>
+            <button type="button" onClick={this.props.changeToAddMode}>	+ New Note</button>
           </div>
         </div>
       )
