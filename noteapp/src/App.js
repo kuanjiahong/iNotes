@@ -242,7 +242,7 @@ class Sidebar extends React.Component {
   // format note title that are too long to just "..."
   formatNoteTitle(noteTitle) {
     if (noteTitle.length > 10) {
-      let newString = noteTitle.slice(0, 5).concat("...")
+      let newString = noteTitle.slice(0, 9).concat("...")
       return newString
     } else {
       return noteTitle
@@ -305,7 +305,7 @@ class Sidebar extends React.Component {
           <p className='mb-0'>Notes ({length})</p>
           <ul className='note-list'>
             {
-             sortedNotes.map((note) => 
+             sortedNotes.map((note) =>
              {
               let noteClass = "individual-note ";
               if (note._id === activeNoteId) {
