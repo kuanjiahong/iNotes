@@ -436,8 +436,17 @@ class NewNotePage extends React.Component {
     return (
     <div className='dashboard-container'>
       <div className='save-cancel-button-container'>
-        <button type="button" onClick={()=>{this.props.saveClicked(0, this.state.title, this.state.content, "NEW")}}>Save</button>
-        <button className='ml-1' type="button" onClick={this.props.cancelClicked}>Cancel</button>
+        <button 
+          type="button" 
+          onClick={this.props.cancelClicked}>
+            Cancel
+        </button>
+        <button 
+          className='ml-1' 
+          type="button" 
+          onClick={()=>{this.props.saveClicked(0, this.state.title, this.state.content, "NEW")}}>
+          Save
+        </button>
       </div>
       <div className='add-note-mode-container'>
         <div className='input-container'>
@@ -479,16 +488,17 @@ class EditNotePage extends React.Component {
     return (
       <div className='dashboard-container'>
         <div className='save-cancel-button-container'>
-          <button
-            type="button" 
-            onClick={()=>{this.props.saveClicked(this.props.activeNote[0]._id, this.state.title, this.state.content, "UPDATE")}}>
-            Save
-          </button>
-          <button className='ml-1' 
+          <button  
             type="button" 
             onClick={this.props.cancelClicked}>
               Cancel
             </button>
+          <button
+            className='ml-1'
+            type="button" 
+            onClick={()=>{this.props.saveClicked(this.props.activeNote[0]._id, this.state.title, this.state.content, "UPDATE")}}>
+            Save
+          </button>
         </div>
         <div className='edit-note-mode-container'>
           <div className='input-container'>
