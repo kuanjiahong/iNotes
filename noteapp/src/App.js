@@ -3,7 +3,7 @@ import $ from 'jquery';
 import React from 'react';
 
 
-class iNotes extends React.Component {
+class iNotesApp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -584,4 +584,4 @@ class LoginForm extends React.Component {
 
 
 
-export default iNotes;
+export default iNotesApp;
