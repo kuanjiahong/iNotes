@@ -25,6 +25,7 @@ app.use(session({
 
 // cors 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.options('*', cors());
 
 // database
 let monk = require('monk');
