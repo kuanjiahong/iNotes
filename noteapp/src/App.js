@@ -346,7 +346,7 @@ class Dashboard extends React.Component {
 
 
   saveClicked(noteid, title, content, mode) {
-    if (title === "" && content === "") {
+    if (title === "" || content === "") {
       alert("Please input title and content");
       return false;
     } else {
