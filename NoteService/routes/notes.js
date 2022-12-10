@@ -16,27 +16,6 @@ function createDatebaseTimestemp(dateObj) {
     return dbTimestamp;
 }
 
-/* check if user have logged in or not */
-router.get('/load', (req, res) => {
-    if (req.session.userId) {
-        const userId = req.session.userId;
-        let userListCol = req.db.get('userList');
-        let noteListCol = req.db.get('noteList');
-        let responseData = {error: "", user: "", notes: ""};
-        userListCol.findOne({_id: monk.id(userId)}).then((currentUser) => {
-            responseData.user = currentUser;
-            return noteListCol.find({userId: monk.id(userId)});
-        }).then((notes) => {
-            responseData.notes = notes;
-            res.json(responseData);
-        }).catch(err => {
-            responseData.error = err.toString()
-            res.json(responseData);
-        })
-    } else {
-        res.send("")
-    }
-})
 
 router.post('/signin', (req, res)=> {
     const name = req.body.name;
@@ -45,9 +24,11 @@ router.post('/signin', (req, res)=> {
     let noteListCol = req.db.get('noteList');
     let responseData = {
         error: "",
-        user: "", 
-        notes: ""
+        username: "",
+        icon:"",
+        notes:[] 
     };
+
     userListCol.findOne({name: name, password: password}).then((currentUser) => {
         if (!currentUser) {
             throw new Error('Login failure');
@@ -55,15 +36,18 @@ router.post('/signin', (req, res)=> {
         
         req.session.userId = currentUser._id;
 
-        responseData.user = currentUser;
+        responseData.username = currentUser.name;
+        responseData.icon = currentUser.icon;
         return noteListCol.find({userId: currentUser._id});
     }).then((userNotes) => {
         if (!userNotes) {
             throw new Error("Error in retrieving Notes")
         }
+        userNotes.forEach(element => {
+            const {userId, content, ...note} = element; // object destructuring
+            responseData.notes.push(note);
 
-        responseData.notes = userNotes;
-
+        });
         res.json(responseData);
     }).catch(err=> {
         responseData.error = err.toString();
@@ -140,7 +124,7 @@ router.put('/savenote/:noteid', (req, res) => {
         error: "",
     };
     noteListCol.update({_id: monk.id(noteid)}, {$set: updateQuery})
-    .then((result) => {
+    .then(() => {
         responseData.success = newTimestamp;
         res.json(responseData);
     }).catch(err => {
@@ -149,24 +133,38 @@ router.put('/savenote/:noteid', (req, res) => {
     })
 });
 
-router.get('/searchnotes', (req, res) => {
+router.get('/searchnotes', async (req, res) => {
     let searchStr = req.query.searchstr;
     let noteListCol = req.db.get('noteList');
     const userId = req.session.userId;
     let responseData = {
         error: "",
-        result: "",
+        matchedNotes: [],
     }
-    noteListCol.find({userId: monk.id(userId)}).then((documents) => {
+    
+    let dbResult = [];
+    // suspend the function until noteListCol.find() func finish executing
+    dbResult= await noteListCol.find({userId: monk.id(userId)}).then((documents) => {
         let filtered = documents.filter((el) => {
             return el.content.includes(searchStr) || el.title.includes(searchStr);
         });
-        responseData.result = filtered;
-        res.json(responseData);
+        return filtered
     }).catch(err => {
         responseData.error = err.toString();
-        res.json(err);
     });
+
+    
+    if (responseData.error) {
+        res.json(responseData)
+    } else {
+        
+        dbResult.forEach(element => {
+            const {userId, content, ...note} = element;
+            responseData.matchedNotes.push(note);
+        })
+        res.json(responseData)
+    }
+
 
 });
 
