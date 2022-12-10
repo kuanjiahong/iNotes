@@ -44,7 +44,8 @@ router.post('/signin', (req, res)=> {
             throw new Error("Error in retrieving Notes")
         }
         userNotes.forEach(element => {
-            const {userId, content, ...note} = element; // object destructuring
+            // object destructuring - remove userId and content property from note object
+            const {userId, content, ...note} = element; 
             responseData.notes.push(note);
 
         });
@@ -69,9 +70,8 @@ router.get('/getnote', (req, res) => {
         note: ""
     };
 
-    // get all notes if noteid === 0
-    if (noteid === "0") {
-        
+    // get all notes if noteid === "0"
+    if (noteid === "0") { 
         noteListCol.find({userId: monk.id(req.session.userId)}).then((allNotes) => {
             responseData.note = allNotes;
             res.json(responseData);
@@ -175,6 +175,7 @@ router.get('/searchnotes', async (req, res) => {
     } else {
         
         dbResult.forEach(element => {
+            // object destructuring - remove userId and content property from note object
             const {userId, content, ...note} = element;
             responseData.matchedNotes.push(note);
         })
