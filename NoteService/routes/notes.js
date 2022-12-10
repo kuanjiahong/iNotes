@@ -68,16 +68,32 @@ router.get('/getnote', (req, res) => {
         error: "",
         note: ""
     };
-    noteListCol.find({_id: monk.id(noteid)}).then((note) => {
-        if (!note) {
-            throw new Error("Error in retrieving note");
-        }
-        responseData.note = note;
-        res.json(responseData);
-    }).catch(err => {
-        responseData.error = err.toString();
-        res.json(responseData);
-    });
+
+    // get all notes if noteid === 0
+    if (noteid === "0") {
+        console.log(req.session.userId);
+        noteListCol.find({userId: monk.id(req.session.userId)}).then((allNotes) => {
+            responseData.note = allNotes;
+            res.json(responseData);
+        }).catch((err) => {
+            responseData.error = err.toString();
+            res.json(responseData);
+        }); 
+    } 
+
+    else {
+        noteListCol.find({_id: monk.id(noteid)}).then((note) => {
+            if (!note) {
+                throw new Error("Error in retrieving note");
+            }
+            responseData.note = note;
+            res.json(responseData);
+        }).catch(err => {
+            responseData.error = err.toString();
+            res.json(responseData);
+        });
+
+    }
 });
 
 router.post('/addnote', (req,res) => {

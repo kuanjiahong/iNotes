@@ -21,6 +21,8 @@ class iNotesApp extends React.Component {
     
     this.resetModeState = this.resetModeState.bind(this)
 
+    this.getAllNote = this.getAllNote.bind(this)
+
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
@@ -49,6 +51,21 @@ class iNotesApp extends React.Component {
   }
 
 
+  getAllNote() {
+    $.ajax({
+      method: "GET",
+      data: {
+        noteid : 0
+      },
+      url: "http://localhost:3001/getnote",
+      xhrFields: { withCredentials: true },
+      success: (result) => {
+        this.setState({notes: result.note});
+      },
+      error: () => alert("Error in getting all notes")
+    });
+  }
+
   getActiveNote(noteId) {
     this.resetModeState();
     $.ajax({
@@ -75,6 +92,7 @@ class iNotesApp extends React.Component {
       url: "http://localhost:3001/addnote",
       xhrFields: { withCredentials: true },
       success: (result) => {
+        this.getAllNote();
         this.getActiveNote(result.inserted_note_id);
       },
       error: () => alert("Error when adding note"),
@@ -109,7 +127,7 @@ class iNotesApp extends React.Component {
       url: "http://localhost:3001/deletenote/" + noteId,
       xhrFields: { withCredentials: true },
       success: (result) => {
-        this.getAllData();
+        this.getAllNote();
         this.getActiveNote(noteId);
       },
       error: () => alert("Error when deleting note"),
