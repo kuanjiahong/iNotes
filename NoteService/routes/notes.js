@@ -71,7 +71,7 @@ router.get('/getnote', (req, res) => {
 
     // get all notes if noteid === 0
     if (noteid === "0") {
-        console.log(req.session.userId);
+        
         noteListCol.find({userId: monk.id(req.session.userId)}).then((allNotes) => {
             responseData.note = allNotes;
             res.json(responseData);
