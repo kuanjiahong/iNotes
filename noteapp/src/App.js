@@ -19,6 +19,10 @@ class iNotesApp extends React.Component {
     this.changeToAddMode = this.changeToAddMode.bind(this)
     this.changeToEditMode = this.changeToEditMode.bind(this)
     
+    // reset all the internal state for iNotesApp
+    this.resetAllState = this.resetAllState.bind(this);
+
+    // reset only the addNoteMode and editNoteMode
     this.resetModeState = this.resetModeState.bind(this)
 
     this.getAllNote = this.getAllNote.bind(this)
@@ -48,6 +52,18 @@ class iNotesApp extends React.Component {
 
   resetModeState() {
     this.setState({addNoteMode: false,editNoteMode: false})
+  }
+
+  resetAllState() {
+    this.setState({
+        loggedIn: false,
+        username:"",
+        icon: "",
+        notes: [],
+        activeNote: [],
+        addNoteMode: false,
+        editNoteMode: false,
+    });
   }
 
 
@@ -160,32 +176,19 @@ class iNotesApp extends React.Component {
           method: "GET",
           url: "http://localhost:3001/logout",
           xhrFields: { withCredentials: true },
-          success: () => this.setState({
-            loggedIn: false,
-            userId: "",
-            user:"",
-            note:"",
-            activeNote: []
-          }),
+          success: () => this.resetAllState(),
           error: () => alert("Error when logging out "),
         });
       } else {
         return false;
       }
+
     } else {
       $.ajax({
         method: "GET",
         url: "http://localhost:3001/logout",
         xhrFields: { withCredentials: true },
-        success: () => this.setState({
-          loggedIn: false,
-          username:"",
-          icon: "",
-          notes: [],
-          activeNote: [],
-          addNoteMode: false,
-          editNoteMode: false,
-        }),
+        success: () => this.resetAllState(),
         error: () => alert("Error while logging out"),
       });
     }
