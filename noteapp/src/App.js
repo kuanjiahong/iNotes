@@ -8,9 +8,9 @@ class iNotesApp extends React.Component {
     super(props)
     this.state = {
       loggedIn: false,
-      userId: "",
-      user:"",
-      notes:"",
+      username:"",
+      icon: "",
+      notes: [],
       activeNote: [],
       addNoteMode: false,
       editNoteMode: false,
@@ -25,7 +25,7 @@ class iNotesApp extends React.Component {
     this.handleLogout = this.handleLogout.bind(this)
     this.getActiveNote = this.getActiveNote.bind(this)
 
-    this.getAllData = this.getAllData.bind(this)
+
     this.createNote = this.createNote.bind(this)
     this.updateNote = this.updateNote.bind(this)
     this.deleteNote = this.deleteNote.bind(this)
@@ -35,9 +35,6 @@ class iNotesApp extends React.Component {
     
   }
 
-  componentDidMount() {
-    this.getAllData();
-  }
 
   changeToAddMode() {
     this.setState({addNoteMode: true})
@@ -51,21 +48,6 @@ class iNotesApp extends React.Component {
     this.setState({addNoteMode: false,editNoteMode: false})
   }
 
-  getAllData() {
-    $.ajax({
-      method: "GET",
-      url: "http://localhost:3001/load",
-      xhrFields: { withCredentials: true },
-      success: (result) => {
-        if (result === "") {
-          return null;
-        } else {
-          this.handleLogin(result)
-        }
-      },
-      error: (err) => console.error(err)
-    });
-  }
 
   getActiveNote(noteId) {
     this.resetModeState();
@@ -79,7 +61,7 @@ class iNotesApp extends React.Component {
       success: (result) => {
         this.setState({activeNote: result.note})
       },
-      error: (err) => alert("Error: " + err),
+      error: () => alert("Error in retrieving notes"),
     });
   }
 
@@ -93,10 +75,9 @@ class iNotesApp extends React.Component {
       url: "http://localhost:3001/addnote",
       xhrFields: { withCredentials: true },
       success: (result) => {
-        this.getAllData();
         this.getActiveNote(result.inserted_note_id);
       },
-      error: (err) => alert("Error: " + err),
+      error: () => alert("Error when adding note"),
     });
 
     this.setState({addNoteMode: false,editNoteMode: false})
@@ -112,11 +93,10 @@ class iNotesApp extends React.Component {
       },
       url: "http://localhost:3001/savenote/" + noteId,
       xhrFields: { withCredentials: true },
-      success: (result) => {
-        this.getAllData();
+      success: () => {
         this.getActiveNote(noteId);
       },
-      error: (err) => alert("Error: " + err),
+      error: () => alert("Error when saving note"),
     });
 
     this.setState({addNoteMode: false,editNoteMode: false})
@@ -132,26 +112,27 @@ class iNotesApp extends React.Component {
         this.getAllData();
         this.getActiveNote(noteId);
       },
-      error: (err) => alert("Error: " + err),
+      error: () => alert("Error when deleting note"),
     });
   }
 
 
-  updateSideBar(filteredNotes) {
-    this.setState({notes: filteredNotes});
+  updateSideBar(matchedNotes) {
+    this.setState({notes: matchedNotes});
   }
 
   handleLogin(serverReponse) {
-    if (serverReponse.user) {
+    if (serverReponse.username && serverReponse.icon) {
       this.setState({
-        user: serverReponse.user,
+        username: serverReponse.username,
+        icon: serverReponse.icon,
         notes: serverReponse.notes,
         loggedIn: true,
-      })
+      });
     } else {
       alert("Login failure");
-    }
- 
+    } 
+
   }
 
   handleLogout() {
@@ -168,7 +149,7 @@ class iNotesApp extends React.Component {
             note:"",
             activeNote: []
           }),
-          error: (err) => alert("Error: " + err),
+          error: () => alert("Error when logging out "),
         });
       } else {
         return false;
@@ -180,12 +161,14 @@ class iNotesApp extends React.Component {
         xhrFields: { withCredentials: true },
         success: () => this.setState({
           loggedIn: false,
-          userId: "",
-          user:"",
-          note:"",
-          activeNote: []
+          username:"",
+          icon: "",
+          notes: [],
+          activeNote: [],
+          addNoteMode: false,
+          editNoteMode: false,
         }),
-        error: (err) => alert("Error: " + err),
+        error: () => alert("Error while logging out"),
       });
     }
 
@@ -195,7 +178,7 @@ class iNotesApp extends React.Component {
     if (this.state.loggedIn) {
       return (
         <div>
-          <Header icon={this.state.user.icon} name={this.state.user.name} handleLogout={this.handleLogout}/>
+          <Header icon={this.state.icon} name={this.state.username} handleLogout={this.handleLogout}/>
           <div className='main-container'>
             <Sidebar 
               notes={this.state.notes} 
@@ -278,10 +261,10 @@ class Sidebar extends React.Component {
         },
         xhrFields: { withCredentials: true },
         url: "http://localhost:3001/searchnotes",
-        success: (result) => { // server will send result in this form: {error: value, result: value}
-          this.props.updateSideBar(result.result)
+        success: (result) => { 
+          this.props.updateSideBar(result.matchedNotes);
         },
-        error: (err) => {alert("Error: " + err)},
+        error: () => {alert("Error: Something went wrong while searching")},
       });
     }
 
@@ -559,17 +542,21 @@ class LoginForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    $.ajax({
-      method: "POST",
-      data: {
-        name: this.state.name,
-        password: this.state.password,
-      },
-      xhrFields: { withCredentials: true },
-      url: "http://localhost:3001/signin",
-      success: (result) => {this.props.handleLogin(result)},
-      error: (err) => {alert("Error: " + err)},
-    });
+    if (this.state.name === "" || this.state.password === "") {
+      alert("Please make sure name and password are filled in");
+    } else {
+      $.ajax({
+        method: "POST",
+        data: {
+          name: this.state.name,
+          password: this.state.password,
+        },
+        xhrFields: { withCredentials: true },
+        url: "http://localhost:3001/signin",
+        success: (result) => {this.props.handleLogin(result)},
+        error: () => {alert("Something went wrong when logging in")},
+      });
+    }
   }
 
   render() {
